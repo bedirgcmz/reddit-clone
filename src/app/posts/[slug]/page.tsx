@@ -17,7 +17,6 @@ const PostPage = ({ params }: { params: { slug: string } }) => {
   const slug = params.slug;
 
   useEffect(() => {
-    // URL'den gelen slug parametresini FetchContext'e geçiriyoruz
     setPostParamsSlug(slug);
   }, [slug, setPostParamsSlug]);
 

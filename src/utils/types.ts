@@ -56,6 +56,12 @@ export type UserType = {
     id: string;
     name: string;
     topic_id: string;
+    slug: string;
+  };
+  export type Post_SubtopicsDataTypes = {
+    id: string;
+    subtopic_id: string;
+    post_id: string;
   };
 
 
@@ -73,5 +79,17 @@ export type FetchContextType = {
     posts: PostDataTypes[] | null; 
     setPosts: React.Dispatch<React.SetStateAction<PostDataTypes[] | null>>; 
     loading: boolean;
+    setLoading: React.Dispatch<React.SetStateAction<boolean>>; 
     error: string | null;
+    setError: React.Dispatch<React.SetStateAction<string | null>>; 
+    filteredPosts: PostDataTypes[] | null; 
+    setFilteredPosts: React.Dispatch<React.SetStateAction<PostDataTypes[] | null>>;
+
+    
   };
+
+//   export type SubtopicsPageFetchContextType = {
+//     filteredPosts: PostDataTypes[] | null; 
+//     setFilteredPosts: React.Dispatch<React.SetStateAction<PostDataTypes[] | null>>; 
+
+//   }

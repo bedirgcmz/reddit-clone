@@ -1,4 +1,4 @@
-// src/context/FetchContext.tsx
+
 "use client";
 import React, { createContext, useState, useEffect, useContext, ReactNode } from 'react';
 import supabase from '@/lib/supabaseClient';
@@ -17,6 +17,8 @@ export const FetchProvider = ({ children }: { children: ReactNode }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [postParamsSlug, setPostParamsSlug] = useState<string | null>(null);
+  const [filteredPosts, setFilteredPosts] = useState<PostDataTypes[] | null>([]);
+
 
   useEffect(() => {
     const fetchPostAndAuthor = async () => {
@@ -101,7 +103,11 @@ export const FetchProvider = ({ children }: { children: ReactNode }) => {
       posts, 
       setPosts,
       loading,
-      error
+      setLoading,
+      error,
+      setError,
+      filteredPosts,
+      setFilteredPosts
     }}>
       {children}
     </FetchContext.Provider>

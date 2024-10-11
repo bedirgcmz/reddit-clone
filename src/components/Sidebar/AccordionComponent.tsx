@@ -6,6 +6,7 @@ import { FaRegSmileBeam } from "react-icons/fa";
 import { IoGameControllerOutline } from "react-icons/io5";
 import { IoHardwareChipOutline } from "react-icons/io5";
 import { BiMoviePlay } from "react-icons/bi";
+import Link from "next/link";
 
 
 export default function AccordionComponent() {
@@ -45,6 +46,7 @@ export default function AccordionComponent() {
   
     fetchPosts();
   }, []);
+
   return (
     <Accordion alwaysOpen>
       {
@@ -63,7 +65,9 @@ export default function AccordionComponent() {
                <Accordion.Body >
                   <ul className="my-2">
                     {subtopics?.filter((e) => e.topic_id === item.id).map((subtopic) => (
-                      <li key={subtopic.id} className="py-1">{subtopic.name}</li>
+                      <Link href={`/c/${subtopic.slug}` } key={subtopic.id}>
+                          <li  className="py-1">{subtopic.name}</li>
+                      </Link>
                     ))}
                   </ul>
 
