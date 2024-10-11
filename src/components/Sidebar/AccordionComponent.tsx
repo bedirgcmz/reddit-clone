@@ -2,6 +2,10 @@ import supabase from "@/lib/supabaseClient";
 import { SubtopicsDataTypes, TopicsDataTypes } from "@/utils/types";
 import Accordion from 'react-bootstrap/Accordion';
 import { useEffect, useState } from "react";
+import { FaRegSmileBeam } from "react-icons/fa";
+import { IoGameControllerOutline } from "react-icons/io5";
+import { IoHardwareChipOutline } from "react-icons/io5";
+import { BiMoviePlay } from "react-icons/bi";
 
 
 export default function AccordionComponent() {
@@ -47,7 +51,15 @@ export default function AccordionComponent() {
         topics && topics.length > 0 ? (
           topics.map((item, index) => (
             <Accordion.Item key={item.id} eventKey={`${index}`}>
-               <Accordion.Header>{item.name}</Accordion.Header>
+               <Accordion.Header>
+                {index == 0 && <FaRegSmileBeam/>}
+                {index == 1 && <IoGameControllerOutline/>}
+                {index == 2 && <IoHardwareChipOutline/>}
+                {index == 3 && <BiMoviePlay/>}
+                <span className="ms-2">
+                {item.name}
+                </span>
+                </Accordion.Header>
                <Accordion.Body >
                   <ul className="my-2">
                     {subtopics?.filter((e) => e.topic_id === item.id).map((subtopic) => (
