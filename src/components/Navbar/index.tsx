@@ -1,12 +1,17 @@
 
 
+"use client"
 import { useState } from 'react';
 import SigninModal from '@/components/SigninModal'; 
 import SignupModal from '@/components/SignupModal'; 
 import { IoSearch } from "react-icons/io5";
+import Sidebar from '@/components/Sidebar';
+import { useGeneralContext } from '@/context/GeneralContext';
+
+
 
 const Navbar = () => {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const { isSidebarOpen, setIsSidebarOpen } = useGeneralContext();
   const [isSigninModalOpen, setIsSigninModalOpen] = useState(false);
   const [isSignupModalOpen, setIsSignupModalOpen] = useState(false);
   const [isMoreMenuOpen, setIsMoreMenuOpen] = useState(false);
@@ -97,17 +102,8 @@ const Navbar = () => {
 
       {/* Sidebar */}
       {isSidebarOpen && (
-        <div className="fixed inset-0 bg-gray-800 bg-opacity-50 z-40" onClick={() => setIsSidebarOpen(false)}>
-          <div className="fixed top-0 left-0 w-64 bg-white h-full shadow-md z-50">
-            <button
-              className="p-4"
-              onClick={() => setIsSidebarOpen(false)}
-            >
-              Close Sidebar
-            </button>
-            {/* Sidebar content goes here */}
-          </div>
-        </div>
+        
+       <Sidebar />
       )}
 
       {/* Modals */}

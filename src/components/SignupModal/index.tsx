@@ -9,7 +9,7 @@ interface SignupModalProps {
 const SignupModal: React.FC<SignupModalProps> = ({ onClose, onOpenSignin }) => {
   return (
     <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50">
-      <div className="bg-white p-6 rounded shadow-lg max-w-md w-full">
+      <div className="bg-white p-6 rounded shadow-lg max-w-md w-full relative">
         <h2 className="text-xl font-semibold mb-4">Sign Up</h2>
         <button onClick={onClose}  className="w-8 h-8 rounded-full text-2xl flex justify-center items-center text-gray-600 hover:text-orange-300 absolute top-[12px] right-[12px]  hover:bg-gray-200"><IoClose /></button>
         <form>
