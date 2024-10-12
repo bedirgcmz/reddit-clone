@@ -41,7 +41,7 @@ const SignupModal: React.FC<SignupModalProps> = ({ onClose, onOpenSignin }) => {
         </form>
         <p className="mt-4">
           Already have an account?{' '}
-          <span className="text-blue-600 cursor-pointer" onClick={onOpenSignin}>Sign In</span>
+          <span className="text-blue-600 cursor-pointer" onClick={onOpenSignin}>Log In</span>
         </p>
       </div>
     </div>

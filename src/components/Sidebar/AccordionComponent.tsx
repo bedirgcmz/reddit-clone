@@ -9,7 +9,11 @@ import { BiMoviePlay } from "react-icons/bi";
 import Link from "next/link";
 
 
-export default function AccordionComponent() {
+type AccordionComponentProps = {
+  setIsSidebarOpen: React.Dispatch<React.SetStateAction<boolean>>;
+};
+
+export default function AccordionComponent({setIsSidebarOpen}: AccordionComponentProps) {
   const [topics, setTopics] = useState<TopicsDataTypes[] | null>([]);
   const [subtopics, setSubtopics] = useState<SubtopicsDataTypes[] | null>([]);
   const [loading, setLoading] = useState(true);
@@ -65,8 +69,8 @@ export default function AccordionComponent() {
                <Accordion.Body >
                   <ul className="my-2">
                     {subtopics?.filter((e) => e.topic_id === item.id).map((subtopic) => (
-                      <Link href={`/c/${subtopic.slug}` } key={subtopic.id}>
-                          <li  className="py-1">{subtopic.name}</li>
+                      <Link href={`/c/${subtopic.slug}` } key={subtopic.id} >
+                          <li  className="py-1" onClick={() => setIsSidebarOpen(false)}>{subtopic.name}</li>
                       </Link>
                     ))}
                   </ul>
@@ -75,7 +79,7 @@ export default function AccordionComponent() {
               </Accordion.Item>
             ))
           ) : (
-            <Accordion.Item eventKey="not-found"> No topics found</Accordion.Item>
+            <Accordion.Item eventKey="not-found"> Loading topics...</Accordion.Item>
           )
       }
   </Accordion>

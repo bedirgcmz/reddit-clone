@@ -7,6 +7,7 @@ import SignupModal from '@/components/SignupModal';
 import { IoSearch } from "react-icons/io5";
 import Sidebar from '@/components/Sidebar';
 import { useGeneralContext } from '@/context/GeneralContext';
+import Link from 'next/link';
 
 
 
@@ -46,29 +47,31 @@ const Navbar = () => {
 
       {/* Logo */}
       <div className="flex items-center">
-        <img src="/images/logo.png" alt="Reddit Logo" className="w-10 h-10 mr-2" />
-        <span className="font-bold text-2xl hidden md:inline text-orange-400">reddit</span>
+        <Link href="/" className="flex items-center">
+          <img src="/images/logo.png" alt="Reddit Logo" className="w-10 h-10 mr-2" />
+          <span className="font-bold text-2xl hidden md:inline text-orange-400">reddit</span>
+        </Link>
       </div>
 
       {/* Search Bar */}
-      <div className="flex-1 mx-4 text-center">
+      <div className="flex-1 mx-4 text-center search-input-field">
         <span className='relative'>
           <input
             type="text"
             placeholder="Search Reddit"
-            className="w-full max-w-[600px] h-10 ps-10 pe-4 py-2 rounded-full focus:outline-none bg-gray text-sm"
+            className=" w-full max-w-[600px] h-10 ps-10 pe-4 py-2 rounded-full focus:outline-none bg-gray text-sm"
           />
           <IoSearch className="absolute top-[1px] left-[16px] text-xl text-[#808080]" />
         </span>
       </div>
 
       {/* Right Icons */}
-      <div className="flex items-center space-x-4">
+      <div className="flex items-center md:space-x-4">
         <button className="hidden md:flex items-center bg-gray text-sm py-2 px-4 rounded-full">
           Get App
         </button>
         <button
-          className="bg-orange text-white text-sm py-2 px-4 rounded-full"
+          className="bg-orange text-white text-[12px] md:text-sm py-[10px] px-[20px] me-2 md:me-0 md:py-2 md:px-4 rounded-full"
           onClick={handleOpenSignin}
         >
           Log In

@@ -24,7 +24,7 @@ const SigninModal: React.FC<SigninModalProps> = ({ onClose, onOpenSignup }) => {
             className="w-full p-2 mb-4 border border-gray-300 rounded"
             required
           />
-          <button type="submit" className="w-full p-2 text-white bg-blue-600 rounded hover:bg-blue-500">Sign In</button>
+          <button type="submit" className="w-full p-2 text-white bg-blue-600 rounded hover:bg-blue-500">Log In</button>
         </form>
         <p className="mt-4">
           Don't have an account?{' '}

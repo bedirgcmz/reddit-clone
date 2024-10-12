@@ -2,6 +2,30 @@
 @tailwind components;
 @tailwind utilities;
 
+
+
+/* Varsayılan durum */
+.search-input-field {
+  transition: all 0.3s ease; 
+}
+
+
+@media (max-width: 600px) {
+  .search-input-field:focus-within {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000; 
+    margin: 0 !important;
+
+    input{
+      border-radius: 0;
+      height: 50px;
+    }
+  }
+}
+
 .h-calc {
   height: calc(100vh - 60px);
 }
