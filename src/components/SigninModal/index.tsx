@@ -54,14 +54,14 @@ interface SigninModalProps {
 
 const SigninModal: React.FC<SigninModalProps> = ({ onClose, onOpenSignup }) => {
   const { users } = useFetchContext();
-  const { setCurrentUser } = useGeneralContext(); // currentUser kullanmak için setCurrentUser alıyoruz
+  const { setCurrentUser } = useGeneralContext(); 
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
-  const [error, setError] = useState<string | null>(null); // Hata kontrolü için state
+  const [error, setError] = useState<string | null>(null); 
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError(null); // Önceki hataları sıfırla
+    setError(null); 
 
     try {
       // Supabase ile kullanıcıyı doğrula

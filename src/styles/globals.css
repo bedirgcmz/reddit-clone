@@ -27,7 +27,7 @@
 }
 
 .h-calc {
-  height: calc(100vh - 60px);
+  height: calc(100vh - 66px);
 }
 
 .accordion{
@@ -38,10 +38,6 @@ padding-left: 12px;
   color: rgb(101, 100, 100);
   border: none;
   padding: 4px 0;
-}
-
-.accordion-header {
-  
 }
 
 .accordion-button{

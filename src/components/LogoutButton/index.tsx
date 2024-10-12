@@ -1,17 +1,17 @@
 import React from "react";
 import { useGeneralContext } from "@/context/GeneralContext";
-import supabase from "@/lib/supabaseClient"; // Supabase'i import et
+import supabase from "@/lib/supabaseClient"; 
 
 const LogoutButton: React.FC = () => {
-  const { setCurrentUser } = useGeneralContext(); // currentUser state'ini güncellemek için
+  const { setCurrentUser } = useGeneralContext(); 
 
   const handleLogout = async () => {
-    const { error } = await supabase.auth.signOut(); // Supabase ile çıkış yap
+    const { error } = await supabase.auth.signOut(); 
 
     if (error) {
       console.error("Logout error:", error);
     } else {
-      setCurrentUser(null); // Kullanıcıyı sıfırla
+      setCurrentUser(null); 
     }
   };
 

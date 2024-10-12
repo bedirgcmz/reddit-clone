@@ -1,13 +1,8 @@
-// src/context/GeneralContext.tsx
+
 "use client";
 import { UserDataTypes } from '@/utils/types';
 import React, { createContext, useState, useContext, ReactNode } from 'react';
 
-// type UserType = {
-//   id: string;
-//   username: string;
-//   email: string;
-// };
 
 type GeneralContextType = {
   isSidebarOpen: boolean;

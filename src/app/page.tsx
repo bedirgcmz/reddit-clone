@@ -8,7 +8,6 @@ import CreatePostModalButton from '@/components/CreatePostModalButton';
 
 export default function Home() {
   const {
-    // author,
     comments, 
     setComments,
     users, 
@@ -28,7 +27,6 @@ export default function Home() {
   return (
     <div className="">
       <div className=''>
-        <CreatePostModalButton />
         {posts?.map((post) => (
           <div key={post.id} className="hover:bg-gray-100 rounded-lg p-4 mb-[20px] ms-2 w-full lg:w-[700px]">
               <h5 className='flex justify-start items-center mb-[14px]'>

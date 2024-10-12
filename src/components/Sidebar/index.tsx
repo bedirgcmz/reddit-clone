@@ -87,9 +87,10 @@ import { useFetchContext } from '@/context/FetchContext';
 import { TopicsDataTypes, SubtopicsDataTypes } from '@/utils/types';
 import supabase from '@/lib/supabaseClient';
 import AccordionComponent from './AccordionComponent';
+import CreatePostModalButton from '../CreatePostModalButton';
 
 const Sidebar = () => {
-  const { isSidebarOpen, setIsSidebarOpen } = useGeneralContext();
+  const { isSidebarOpen, setIsSidebarOpen, currentUser } = useGeneralContext();
   const [topics, setTopics] = useState<TopicsDataTypes[] | null>([]);
   const [subtopics, setSubtopics] = useState<SubtopicsDataTypes[] | null>([]);
   const [loading, setLoading] = useState(true);
@@ -140,7 +141,8 @@ const Sidebar = () => {
   return (
     <div className='overflow-auto '>
       {/* Md Sidebar*/}
-      <div className="hidden md:flex w-[272px] bg-white h-full shadow-md">
+      <div className="hidden md:flex flex-column w-[272px] bg-white h-full shadow-md">
+      {currentUser && <div className="mb-2 w-full flex justify-end px-4"><CreatePostModalButton /> </div>} 
         <div className="p-4 w-full">
           <h2 className="text-xl text-gray-500">Topics</h2>
           <AccordionComponent setIsSidebarOpen={setIsSidebarOpen}/>
@@ -151,12 +153,13 @@ const Sidebar = () => {
       {isSidebarOpen && (
         <div
           className="fixed inset-0 bg-gray-800 bg-opacity-50 z-40 md:hidden"
-          onClick={handleOutsideClick}  // Dış alana tıklanınca sidebar'ı kapat
+          onClick={handleOutsideClick}  
         >
           <div
-            className="fixed top-0 left-0 w-[272px] bg-white h-full shadow-md z-50"
-            onClick={handleSidebarClick}  // Sidebar içine tıklanırsa kapanmayı engelle
+            className="fixed top-0 left-0 w-[272px] pt-[20px] bg-white h-full shadow-md z-50"
+            onClick={handleSidebarClick}  
           >
+      {currentUser && <div className="mb-2 w-full flex justify-end px-4"><CreatePostModalButton /> </div>} 
             <button className="p-4 text-2xl float-right" onClick={() => setIsSidebarOpen(false)}>
               x
             </button>

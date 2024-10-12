@@ -1,6 +1,5 @@
-// src/components/CreatePostModal.tsx
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useGeneralContext } from "@/context/GeneralContext";
 import supabase from "@/lib/supabaseClient";
 
@@ -17,30 +16,38 @@ export default function CreatePostModal({ isOpen, onClose }: CreatePostModalProp
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  // currentUser'ın değişimini izleyin
+  useEffect(() => {
+    console.log("Current User:", currentUser);
+  }, [currentUser]);
+
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       setImage(e.target.files[0]);
     }
   };
 
-  const handleSubmit = async () => {
+const handleSubmit = async () => {
     if (!title || !content || !currentUser) {
-      setError("Please fill in all fields.");
+      setError("Please fill in all fields and make sure you are logged in.");
       return;
     }
+  
     setLoading(true);
     try {
-      // Resmi yükle ve URL al
       let imageUrl = null;
       if (image) {
+        const fileName = `${Date.now()}-${image.name}`; // encodeURIComponent kaldırıldı
         const { data, error: uploadError } = await supabase.storage
           .from("post-images")
-          .upload(`public/${image.name}`, image);
-
+          .upload(fileName, image); // public/ kaldırıldı
+  
         if (uploadError) throw uploadError;
-        imageUrl = data?.path ? supabase.storage.from("post-images").getPublicUrl(data.path).data?.publicUrl : null;
+  
+        // Kamuya açık URL'yi al
+        imageUrl = supabase.storage.from("post-images").getPublicUrl(fileName).data.publicUrl;
       }
-
+  
       // Post verisini oluştur
       const { data: post, error: postError } = await supabase
         .from("posts")
@@ -49,22 +56,22 @@ export default function CreatePostModal({ isOpen, onClose }: CreatePostModalProp
             title,
             content,
             image: imageUrl,
-            user_id: currentUser.id,
+            user_id: currentUser?.id,
             slug: title.toLowerCase().replace(/\s+/g, "-"),
             created_at: new Date(),
           },
         ]);
-
+  
       if (postError) throw postError;
+  
       onClose(); // Modal'ı kapat
-
     } catch (error) {
       setError((error as Error).message);
     } finally {
       setLoading(false);
     }
   };
-
+  
   if (!isOpen) return null;
 
   return (
