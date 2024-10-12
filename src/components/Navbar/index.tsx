@@ -8,14 +8,16 @@ import { IoSearch } from "react-icons/io5";
 import Sidebar from '@/components/Sidebar';
 import { useGeneralContext } from '@/context/GeneralContext';
 import Link from 'next/link';
+import LogoutButton from '@/components/LogoutButton';
 
 
 
 const Navbar = () => {
-  const { isSidebarOpen, setIsSidebarOpen } = useGeneralContext();
+  const { isSidebarOpen, setIsSidebarOpen, currentUser } = useGeneralContext();
   const [isSigninModalOpen, setIsSigninModalOpen] = useState(false);
   const [isSignupModalOpen, setIsSignupModalOpen] = useState(false);
   const [isMoreMenuOpen, setIsMoreMenuOpen] = useState(false);
+  
 
   const handleOpenSignup = () => {
     setIsSignupModalOpen(true);
@@ -28,7 +30,7 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="bg-white shadow-md fixed top-0 left-0 right-0 z-50 flex items-center px-4 md:px-8 py-2">
+    <nav className="bg-white shadow-md fixed top-0 left-0 right-0 z-50 flex items-center sm:px-2 md:px-8 py-2">
       {/* Hamburger Menu Icon - only visible on screens smaller than 768px */}
       <button
         className="block md:hidden p-2 focus:outline-none"
@@ -66,38 +68,66 @@ const Navbar = () => {
       </div>
 
       {/* Right Icons */}
-      <div className="flex items-center md:space-x-4">
+      <div className="flex items-center md:space-x-4 me-[6px] md:me-0">
         <button className="hidden md:flex items-center bg-gray text-sm py-2 px-4 rounded-full">
           Get App
         </button>
+        {
+          !currentUser ? 
         <button
           className="bg-orange text-white text-[12px] md:text-sm py-[10px] px-[20px] me-2 md:me-0 md:py-2 md:px-4 rounded-full"
           onClick={handleOpenSignin}
         >
           Log In
         </button>
+        :
+        <LogoutButton />
+        }
         <button
           className="relative"
           onClick={() => setIsMoreMenuOpen(!isMoreMenuOpen)}
         >
-          <span className="w-8 h-8 rounded-full bg-gray-300 flex items-center justify-center">
-            ...
-          </span>
+          {
+            !currentUser ?
+            <span className="w-8 h-8 rounded-full bg-gray-300 flex items-center justify-center">
+              ...
+            </span>
+            :
+            <img src={currentUser.image} alt={currentUser.fullname} className='w-8 h-8 rounded-full'/>
+
+          }
           {/* Dropdown Menu */}
           {isMoreMenuOpen && (
-            <div className="absolute right-0 mt-2 py-2 w-48 bg-white border rounded shadow-xl">
+            <div className="absolute flex flex-column gap-1 items-center right-0 mt-2 py-2 w-36 bg-white border rounded shadow-xl">
+              {
+                !currentUser ?
               <button
                 onClick={handleOpenSignin}
                 className="block px-4 py-2 text-gray-800 hover:bg-gray-200 w-full text-left"
               >
                 Log In
               </button>
+              :
+              <LogoutButton />
+              }
+              {
+                !currentUser ?
               <button
                 onClick={handleOpenSignup}
                 className="block px-4 py-2 text-gray-800 hover:bg-gray-200 w-full text-left"
               >
                 Sign Up
               </button>
+              :
+              <Link href="/profile">
+                <button
+                className="block px-4 py-2 text-gray-800 hover:bg-gray-200 w-full text-left"
+              >
+                My Profile
+              </button>
+              </Link>
+
+              }
             </div>
           )}
         </button>

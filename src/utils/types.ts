@@ -29,6 +29,7 @@ export type UserType = {
     username: string;
     image: string;
     role: string;
+    email: string;
     password: string;
     created_at: string;
   };
@@ -38,6 +39,7 @@ export type UserType = {
     username: string;
     image: string;
     role: string;
+    email: string;
     password: string;
     created_at: string;
   };

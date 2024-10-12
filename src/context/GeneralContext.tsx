@@ -1,29 +1,34 @@
 // src/context/GeneralContext.tsx
 "use client";
+import { UserDataTypes } from '@/utils/types';
 import React, { createContext, useState, useContext, ReactNode } from 'react';
 
-// GeneralContext için bir tür tanımlıyoruz
+// type UserType = {
+//   id: string;
+//   username: string;
+//   email: string;
+// };
+
 type GeneralContextType = {
   isSidebarOpen: boolean;
   setIsSidebarOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  currentUser: UserDataTypes | null;
+  setCurrentUser: React.Dispatch<React.SetStateAction<UserDataTypes | null>>;
 };
 
-// Başlangıç değerleri
 const GeneralContext = createContext<GeneralContextType | undefined>(undefined);
 
-// Provider bileşeni oluşturma
 export const GeneralProvider = ({ children }: { children: ReactNode }) => {
-  // Paylaşılacak state'leri tanımlıyoruz
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-
+  const [currentUser, setCurrentUser] = useState<UserDataTypes | null>(null); 
+  console.log(currentUser);
   return (
-    <GeneralContext.Provider value={{ isSidebarOpen, setIsSidebarOpen }}>
+    <GeneralContext.Provider value={{ isSidebarOpen, setIsSidebarOpen, currentUser, setCurrentUser }}>
       {children}
     </GeneralContext.Provider>
   );
 };
 
-// Custom hook ile GeneralContext'i kolayca kullanma
 export const useGeneralContext = () => {
   const context = useContext(GeneralContext);
   if (context === undefined) {

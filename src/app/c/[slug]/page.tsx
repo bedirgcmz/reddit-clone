@@ -134,15 +134,16 @@
 // export default SubtopicPage;
 
 "use client";
-import { createContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useFetchContext } from "@/context/FetchContext";
 import { timeAgo } from "@/utils/helpers"; 
 import { TbPointFilled } from "react-icons/tb";
 import Link from "next/link";
 import supabase from "@/lib/supabaseClient";
-import { Post_SubtopicsDataTypes, SubtopicsDataTypes } from "@/utils/types";
+import { Post_SubtopicsDataTypes, SubtopicsDataTypes, TopicsDataTypes } from "@/utils/types";
 
 const SubtopicPage = ({ params }: { params: { slug: string } }) => {
+  const [topics, setTopics] = useState<TopicsDataTypes[] | null>([]);
     const [subtopicsParamSlug, setSubtopicsParamSlug] = useState(params.slug);
     const [subtopic, setSubtopic] = useState<SubtopicsDataTypes | null>(null);
     const [postSubtopic, setPostSubtopic] = useState<Post_SubtopicsDataTypes[] | null>([]);
@@ -213,15 +214,40 @@ const SubtopicPage = ({ params }: { params: { slug: string } }) => {
         }
     }, [subtopicsParamSlug, posts]);
 
+    useEffect(() => {
+        const fetchPosts = async () => {
+          setLoading(true);
+          try {
+            // Tüm topics çekiyoruz
+            const { data: topicsData, error: topicsError } = await supabase
+              .from('topics')
+              .select('*');
+      
+            if (topicsError) throw topicsError;
+            if (!topicsData) throw new Error(`No topics found`);
+            setTopics(topicsData); 
+    
+          } catch (err) {
+            setError((err as Error).message);
+          } finally {
+            setLoading(false);
+          }
+        };
+      
+        fetchPosts();
+      }, [slug]);
+
     if (loading) return <p>Loading...</p>;
     if (error) return <p>Error: {error}</p>;
 
     return (
         <div className="">
             <div className="">
+                <h1 className="text-2xl md:text-4xl">{subtopic?.name}</h1>
+                <p className="text-blue-200 text-sm mb-4">{topics?.find((tp) => tp.id == subtopic?.topic_id)?.name}</p>
                 {filteredPosts && filteredPosts.length > 0 ? (
                     filteredPosts.map((post) => (
-                        <div key={post.id} className="hover:bg-gray-100 rounded-lg p-4 mb-[20px] ms-2 w-full lg:w-[700px]">
+                        <div key={post.id} className="hover:bg-gray-100 rounded-lg p-4 mb-[20px] w-full lg:w-[700px]">
                             <h5 className="flex justify-start items-center mb-[14px]">
                                 <img
                                     className="rounded-full me-2"

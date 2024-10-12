@@ -4,6 +4,7 @@ import { useFetchContext } from '@/context/FetchContext';
 import { timeAgo } from "@/utils/helpers"; 
 import { TbPointFilled } from "react-icons/tb";
 import Link from 'next/link';
+import CreatePostModalButton from '@/components/CreatePostModalButton';
 
 export default function Home() {
   const {
@@ -27,6 +28,7 @@ export default function Home() {
   return (
     <div className="">
       <div className=''>
+        <CreatePostModalButton />
         {posts?.map((post) => (
           <div key={post.id} className="hover:bg-gray-100 rounded-lg p-4 mb-[20px] ms-2 w-full lg:w-[700px]">
               <h5 className='flex justify-start items-center mb-[14px]'>
