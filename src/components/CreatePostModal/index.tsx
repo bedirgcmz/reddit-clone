@@ -37,14 +37,14 @@ const handleSubmit = async () => {
     try {
       let imageUrl = null;
       if (image) {
-        const fileName = `${Date.now()}-${image.name}`; // encodeURIComponent kaldırıldı
+        const fileName = `${Date.now()}-${image.name}`; 
         const { data, error: uploadError } = await supabase.storage
           .from("post-images")
-          .upload(fileName, image); // public/ kaldırıldı
+          .upload(fileName, image); 
   
         if (uploadError) throw uploadError;
   
-        // Kamuya açık URL'yi al
+        // public URL'yi al
         imageUrl = supabase.storage.from("post-images").getPublicUrl(fileName).data.publicUrl;
       }
   
@@ -64,7 +64,7 @@ const handleSubmit = async () => {
   
       if (postError) throw postError;
   
-      onClose(); // Modal'ı kapat
+      onClose(); 
     } catch (error) {
       setError((error as Error).message);
     } finally {

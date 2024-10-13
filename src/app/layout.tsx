@@ -28,11 +28,11 @@ export default function RootLayout({
           <GeneralProvider>
           <FetchProvider>
               <Navbar />
-              <main className="flex gap-2 h-calc">
+              <main className="flex md:gap-2 h-calc">
                 <div className="sidebar hide md:flex md:w-[280px] border-e">
                   <Sidebar />
                 </div>
-                <div className="main-content w-full overflow-auto p-4">
+                <div className="main-content w-full overflow-auto">
                 {children}
                 </div>
               </main>

@@ -2,7 +2,7 @@
 "use client";
 import React, { createContext, useState, useEffect, useContext, ReactNode } from 'react';
 import supabase from '@/lib/supabaseClient';
-import { UserDataTypes, PostDataTypes, FetchContextType, CommentsDataTypes, UsersDataTypes } from '@/utils/types';
+import { PostDataTypes, FetchContextType, CommentsDataTypes, UsersDataTypes, FavoritesDataTypes } from '@/utils/types';
 
 // Başlangıç değerleri
 const FetchContext = createContext<FetchContextType | undefined>(undefined);
@@ -12,8 +12,8 @@ export const FetchProvider = ({ children }: { children: ReactNode }) => {
   const [singlePost, setSinglePost] = useState<PostDataTypes | null>(null);
   const [posts, setPosts] = useState<PostDataTypes[] | null>([]);
   const [comments, setComments] = useState<CommentsDataTypes[] | null>([]);
+  const [favorites, setFavorites] = useState<FavoritesDataTypes[] | null>([]);
   const [users, setUsers] = useState<UsersDataTypes[] | null>([]);
-//   const [author, setAuthor] = useState<UserDataTypes | null>(null); 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [postParamsSlug, setPostParamsSlug] = useState<string | null>(null);
@@ -68,6 +68,15 @@ export const FetchProvider = ({ children }: { children: ReactNode }) => {
           if (commentsError) throw commentsError;
           if (!commentsData) throw new Error(`No comment found`);
           setComments(commentsData); 
+
+          // Tum Favorites verilerini alalim
+          const { data: favoritesData, error: favoritesError } = await supabase
+          .from('favorites')
+          .select('*') 
+          
+          if (favoritesError) throw favoritesError;
+          if (!favoritesData) throw new Error(`No favorites found`);
+          setFavorites(favoritesData); 
   
           // Tum Users verilerini alalim
           const { data: usersData, error: usersError } = await supabase
@@ -98,6 +107,8 @@ export const FetchProvider = ({ children }: { children: ReactNode }) => {
       setPostParamsSlug,
       comments, 
       setComments,
+      favorites,
+      setFavorites,
       users, 
       setUsers,
       posts, 

@@ -28,7 +28,7 @@ export default function Home() {
     <div className="">
       <div className=''>
         {posts?.map((post) => (
-          <div key={post.id} className="hover:bg-gray-100 rounded-lg p-4 mb-[20px] ms-2 w-full lg:w-[700px]">
+          <div key={post.id} className="hover:bg-gray-100 rounded-lg p-4 mb-[20px] md:ms-2 w-full lg:w-[700px]">
               <h5 className='flex justify-start items-center mb-[14px]'>
                 <img className='rounded-full me-2' src={ users?.find((user) => user.id == post.user_id)?.image } alt="user" width={20} /> 
                 <span>
