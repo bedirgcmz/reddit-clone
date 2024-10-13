@@ -9,6 +9,7 @@ import Sidebar from '@/components/Sidebar';
 import { useGeneralContext } from '@/context/GeneralContext';
 import Link from 'next/link';
 import LogoutButton from '@/components/LogoutButton';
+import { FaUserCircle } from "react-icons/fa";
 
 
 
@@ -90,7 +91,7 @@ const Navbar = () => {
           {
             !currentUser ?
             <span className="w-8 h-8 rounded-full bg-gray-300 flex items-center justify-center">
-              ...
+              <FaUserCircle />
             </span>
             :
             <img src={currentUser.image} alt={currentUser.fullname} className='w-8 h-8 rounded-full'/>
