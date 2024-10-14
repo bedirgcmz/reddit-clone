@@ -1,17 +1,3 @@
-export type UserType = {
-    name: string;
-    password: string;
-    favoriList: string[];
-    image: string;
-    id: number;
-  };
-  
-  export type userContextType = {
-    user: UserType | null;
-    setUser: (user: UserType | null) => void;
-    loggedIn: boolean;
-    setLoggedIn: (loggedIn: boolean) => void;
-  };
 
   export type PostDataTypes = {
     id: string;
@@ -84,9 +70,3 @@ export type FetchContextType = {
 
     
   };
-
-//   export type SubtopicsPageFetchContextType = {
-//     filteredPosts: PostDataTypes[] | null; 
-//     setFilteredPosts: React.Dispatch<React.SetStateAction<PostDataTypes[] | null>>; 
-
-//   }

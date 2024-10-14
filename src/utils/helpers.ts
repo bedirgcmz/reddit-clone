@@ -1,3 +1,4 @@
+import { CommentsDataTypes } from "./types";
 
 export function timeAgo(date: Date | string): string {
     const now = new Date();
@@ -22,4 +23,11 @@ export function timeAgo(date: Date | string): string {
   
     return "just now";
   }
+
+ //sortByDate.ts
+ export const sortCommentsByDate = (comments: CommentsDataTypes[]): CommentsDataTypes[] => {
+  return comments.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+};
+
+
   

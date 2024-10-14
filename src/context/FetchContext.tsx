@@ -48,54 +48,86 @@ export const FetchProvider = ({ children }: { children: ReactNode }) => {
   }, [postParamsSlug]);
 
   useEffect(() => {
-    const fetchPosts = async () => {
       setLoading(true);
+    getUsers()
+    getPosts()
+    getComments()
+    getFavorites()   
+  }, [setComments]);
+
+  const getComments = async () => {
       try {
-        // Tüm posts çekiyoruz
-        const { data: postsData, error: postsError } = await supabase
+         // Tum Comments verilerini alalim
+         const { data: commentsData, error: commentsError } = await supabase
+         .from('comments')
+         .select('*') 
+         
+         if (commentsError) throw commentsError;
+         if (!commentsData) throw new Error(`No comment found`);
+         setComments(commentsData); 
+        
+     } catch (err) {
+        setError((err as Error).message);
+    } finally {
+      setLoading(false);
+    }
+  }
+  const getPosts = async () => {
+    try {
+          // Tüm posts çekiyoruz
+          const { data: postsData, error: postsError } = await supabase
           .from('posts')
           .select('*');
   
         if (postsError) throw postsError;
         if (!postsData) throw new Error(`No posts found`);
         setPosts(postsData); 
-
-          // Tum Comments verilerini alalim
-          const { data: commentsData, error: commentsError } = await supabase
-          .from('comments')
-          .select('*') 
-          
-          if (commentsError) throw commentsError;
-          if (!commentsData) throw new Error(`No comment found`);
-          setComments(commentsData); 
-
-          // Tum Favorites verilerini alalim
-          const { data: favoritesData, error: favoritesError } = await supabase
-          .from('favorites')
-          .select('*') 
-          
-          if (favoritesError) throw favoritesError;
-          if (!favoritesData) throw new Error(`No favorites found`);
-          setFavorites(favoritesData); 
-  
-          // Tum Users verilerini alalim
-          const { data: usersData, error: usersError } = await supabase
-          .from('users')
-          .select('*') 
-          if (usersError) throw usersError;
-          if (!usersData) throw new Error(`No users found`);
-          setUsers(usersData); 
-
-
-      } catch (err) {
-        setError((err as Error).message);
-      } finally {
-        setLoading(false);
-      }
-    };
-  
-    fetchPosts();
-  }, []);
+    } catch (err) {
+       setError((err as Error).message);
+   } finally {
+     setLoading(false);
+   }
+  }
+  const getUsers = async () => {
+    try {
+        // Tum Users verilerini alalim
+        const { data: usersData, error: usersError } = await supabase
+        .from('users')
+        .select('*') 
+        if (usersError) throw usersError;
+        if (!usersData) throw new Error(`No users found`);
+        setUsers(usersData); 
+    } catch (err) {
+       setError((err as Error).message);
+   } finally {
+     setLoading(false);
+   }
+  }
+  const getTopics = async () => {
+    try {
+        
+    } catch (err) {
+       setError((err as Error).message);
+   } finally {
+     setLoading(false);
+   }
+  }
+  const getFavorites = async () => {
+    try {
+         // Tum Favorites verilerini alalim
+         const { data: favoritesData, error: favoritesError } = await supabase
+         .from('favorites')
+         .select('*') 
+         
+         if (favoritesError) throw favoritesError;
+         if (!favoritesData) throw new Error(`No favorites found`);
+         setFavorites(favoritesData); 
+    } catch (err) {
+       setError((err as Error).message);
+   } finally {
+     setLoading(false);
+   }
+  }
   
 
   

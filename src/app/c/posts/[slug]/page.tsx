@@ -1,12 +1,10 @@
 "use client";
 import { useEffect } from 'react';
 import { useFetchContext } from '@/context/FetchContext';
-import { useGeneralContext } from '@/context/GeneralContext';
 import { TbPointFilled } from 'react-icons/tb';
-import { timeAgo } from '@/utils/helpers';
+import { sortCommentsByDate, timeAgo } from '@/utils/helpers';
 import Link from 'next/link';
 import InteractionBox from '@/components/InteractionBox';
-import CreateCommentInput from '@/components/CreateComment';
 
 const PostPage = ({ params }: { params: { slug: string } }) => {
   const {
@@ -19,7 +17,6 @@ const PostPage = ({ params }: { params: { slug: string } }) => {
     loading,
     error,
   } = useFetchContext();
-  const { currentUser } = useGeneralContext()
 
   const slug = params.slug;
 
@@ -30,7 +27,8 @@ const PostPage = ({ params }: { params: { slug: string } }) => {
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error: {error}</p>;
 
-  const targetPostsComments = comments?.filter((e) => e.post_id == singlePost?.id)
+//   const targetPostsComments =sortCommentsByDate( (comments || [])?.filter((e) => e.post_id == singlePost?.id)).reverse()
+  const targetPostsComments = comments ?.filter((e) => e.post_id == singlePost?.id)
 
   return (
     <div className='mt-[70px]'>
@@ -53,13 +51,10 @@ const PostPage = ({ params }: { params: { slug: string } }) => {
             </Link>
               <img src={singlePost.image} alt={singlePost.title} className="w-full h-auto rounded-lg" />
               <InteractionBox singlePost={singlePost} />
-              {
-                currentUser && <CreateCommentInput singlePost={singlePost} />
-              }
             </div>
             <ul className="comments mt-8 ps-4">
             {
-                targetPostsComments?.map((comment) => (
+                targetPostsComments?.reverse().map((comment) => (
                         <li className='p-2 ps-4 pt-4 relative flex flex-col'>
                             {
                             <span className='absolute top-0 left-0 flex items-center'>

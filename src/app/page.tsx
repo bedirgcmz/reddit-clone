@@ -5,6 +5,7 @@ import { timeAgo } from "@/utils/helpers";
 import { TbPointFilled } from "react-icons/tb";
 import Link from 'next/link';
 import CreatePostModalButton from '@/components/CreatePostModalButton';
+import InteractionBox from '@/components/InteractionBox';
 
 export default function Home() {
   const {
@@ -30,7 +31,7 @@ export default function Home() {
         {posts?.map((post) => (
           <div key={post.id} className="hover:bg-gray-100 rounded-lg p-4 mb-[20px] md:ms-2 w-full lg:w-[700px]">
               <h5 className='flex justify-start items-center mb-[14px]'>
-                <img className='rounded-full me-2' src={ users?.find((user) => user.id == post.user_id)?.image } alt="user" width={20} /> 
+                <img className='rounded-full me-2 h-[20px] w-[20px]' src={ users?.find((user) => user.id == post.user_id)?.image } alt="user"/> 
                 <span>
                 r/{ users?.find((user) => user.id == post.user_id)?.username }
                 </span>
@@ -40,10 +41,11 @@ export default function Home() {
                 </span>
               </h5>
             <div>
-            <Link legacyBehavior href={`posts/${post.slug}`}>
+            <Link legacyBehavior href={`/posts/${post.slug}`}>
               <h2 className='mb-2 w-full cursor-pointer'>{post.title}</h2>
             </Link>
               <img src={post.image} alt={post.title} className="w-full h-auto rounded-lg" />
+              <InteractionBox singlePost={post} />
             </div>
           </div>
         ))}
