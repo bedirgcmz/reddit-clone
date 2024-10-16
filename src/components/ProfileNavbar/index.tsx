@@ -8,10 +8,10 @@ export default function ProfileNavbar() {
   const [activeLink, setActiveLink] = useState(pathname);
 
   const links = [
+      { name: "Account", path: "/profile/account" },
     { name: "Posts", path: "/profile/posts" },
     { name: "Comments", path: "/profile/comments" },
-    { name: "Favorites", path: "/profile/favorites" },
-    { name: "Account", path: "/profile/account" }
+    { name: "Favorites", path: "/profile/favorites" }
   ];
 
   return (

@@ -6,25 +6,55 @@ import CreateCommentInput from '@/components/CreateComment';
 import PostCard from '@/components/PostCard';
 import CommentsBox from '@/components/CommentsBox';
 import GoBackButton from '@/components/GoBackButton';
+import supabase from '@/lib/supabaseClient';
 
 const PostPage = ({ params }: { params: { slug: string } }) => {
   const {
     singlePost,
+    setSinglePost,
+    // getSinglePost,
     setPostParamsSlug,
     comments, 
     setComments,
     users, 
     setUsers,
     loading,
+    setLoading,
     error,
+    setError,
+    posts
   } = useFetchContext();
   const { currentUser } = useGeneralContext()
 
   const slug = params.slug;
 
+  const getSinglePost = async () => {
+    setLoading(true);
+    try {
+      // 1. Adım: Post verisini slug'a göre alıyoruz
+      const { data: postData, error: postError } = await supabase
+        .from('posts')
+        .select('*')
+        .eq('slug', slug)
+        .maybeSingle();
+
+      if (postError) throw postError;
+      if (!postData) throw new Error(`No post found for the provided slug: ${slug}`);
+      setSinglePost(postData);
+
+    } catch (err) {
+      setError((err as Error).message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
     setPostParamsSlug(slug);
-  }, [slug, setPostParamsSlug]);
+    getSinglePost()
+  }, [slug, setPostParamsSlug, posts]);
+
+  
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error: {error}</p>;

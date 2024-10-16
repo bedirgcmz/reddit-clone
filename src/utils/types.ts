@@ -73,6 +73,7 @@ export type FetchContextType = {
     setFilteredPosts: React.Dispatch<React.SetStateAction<PostDataTypes[] | null>>;
     getPosts: () => Promise<void>
     getComments: () => Promise<void>
+    // getSinglePost: () => Promise<void>
 
     
   };
