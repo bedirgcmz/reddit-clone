@@ -10,6 +10,9 @@ import { useGeneralContext } from '@/context/GeneralContext';
 import Link from 'next/link';
 import LogoutButton from '@/components/LogoutButton';
 import { FaUserCircle } from "react-icons/fa";
+import CreatePostModalButton from '../CreatePostModalButton';
+import supabase from '@/lib/supabaseClient';
+import { useFetchContext } from '@/context/FetchContext';
 
 
 
@@ -18,6 +21,8 @@ const Navbar = () => {
   const [isSigninModalOpen, setIsSigninModalOpen] = useState(false);
   const [isSignupModalOpen, setIsSignupModalOpen] = useState(false);
   const [isMoreMenuOpen, setIsMoreMenuOpen] = useState(false);
+  const [searchText, setSearchText] = useState("");
+  const {getPosts, setPosts} = useFetchContext();
   
 
   const handleOpenSignup = () => {
@@ -28,6 +33,32 @@ const Navbar = () => {
   const handleOpenSignin = () => {
     setIsSigninModalOpen(true);
     setIsSignupModalOpen(false);
+  };
+
+   // Enter'a basıldığında arama işlemi yapılacak
+   const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === "Enter") {
+      fetchPostsBySearching(searchText);
+    }
+  };
+
+  const fetchPostsBySearching = async (searchText: string) => {
+    try {
+      const { data: posts, error } = await supabase
+        .from("posts")
+        .select("*")
+        .or(`title.ilike.%${searchText}%,content.ilike.%${searchText}%`);
+  
+      if (error) {
+        console.error("Error fetching posts:", error.message);
+        return [];
+      }
+  
+      setPosts(posts)
+    } catch (err) {
+      console.error("Unexpected error:", err);
+      return [];
+    }
   };
 
   return (
@@ -60,19 +91,30 @@ const Navbar = () => {
       <div className="flex-1 mx-4 text-center search-input-field">
         <span className='relative'>
           <input
+          onKeyDown={handleKeyDown}
+            value={searchText}
+            onChange={(e) => setSearchText(e.target.value)}
             type="text"
             placeholder="Search Reddit"
             className=" w-full max-w-[600px] h-10 ps-10 pe-4 py-2 rounded-full focus:outline-none bg-gray text-sm"
           />
-          <IoSearch className="absolute top-[1px] left-[16px] text-xl text-[#808080]" />
+          <IoSearch onClick={() => fetchPostsBySearching(searchText)} className="absolute top-[1px] left-[16px] text-xl text-[#808080]" />
         </span>
       </div>
 
       {/* Right Icons */}
       <div className="flex items-center md:space-x-4 me-[6px] md:me-0">
+        {
+          !currentUser ? 
         <button className="hidden md:flex items-center bg-gray text-sm py-2 px-4 rounded-full">
           Get App
         </button>
+        :
+        <span className='sm:w-[105px] w-[40px]  me-2'>
+            <CreatePostModalButton specialStyles='hidden sm:flex'/>
+        </span>
+       
+        }
         {
           !currentUser ? 
         <button

@@ -1,7 +1,11 @@
+
+
 "use client";
 import { useState, useEffect } from "react";
 import { useGeneralContext } from "@/context/GeneralContext";
 import supabase from "@/lib/supabaseClient";
+import { useFetchContext } from "@/context/FetchContext";
+import { v4 as uuidv4 } from 'uuid';
 
 type CreatePostModalProps = {
   isOpen: boolean;
@@ -10,15 +14,18 @@ type CreatePostModalProps = {
 
 export default function CreatePostModal({ isOpen, onClose }: CreatePostModalProps) {
   const { currentUser } = useGeneralContext();
+  const { getPosts, subtopics } = useFetchContext();
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [image, setImage] = useState<File | null>(null);
+  const [selectedSubtopicId, setSelectedSubtopicId] = useState<string | null>(null); // New state for selected subtopic
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  
 
   // currentUser'ın değişimini izleyin
   useEffect(() => {
-    console.log("Current User:", currentUser);
+    
   }, [currentUser]);
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -27,32 +34,36 @@ export default function CreatePostModal({ isOpen, onClose }: CreatePostModalProp
     }
   };
 
-const handleSubmit = async () => {
-    if (!title || !content || !currentUser) {
+  const handleSubmit = async () => {
+    if (!title || !content || !currentUser || !selectedSubtopicId) {
       setError("Please fill in all fields and make sure you are logged in.");
       return;
     }
-  
+
     setLoading(true);
     try {
       let imageUrl = null;
       if (image) {
-        const fileName = `${Date.now()}-${image.name}`; 
+        const fileName = `${Date.now()}-${image.name}`;
         const { data, error: uploadError } = await supabase.storage
           .from("post-images")
-          .upload(fileName, image); 
-  
+          .upload(fileName, image);
+
         if (uploadError) throw uploadError;
-  
+
         // public URL'yi al
         imageUrl = supabase.storage.from("post-images").getPublicUrl(fileName).data.publicUrl;
       }
-  
+
+      // Post id'sini al
+      const newId = uuidv4();
+
       // Post verisini oluştur
-      const { data: post, error: postError } = await supabase
+      const { data: postData, error: postError } = await supabase
         .from("posts")
         .insert([
           {
+            id: newId,
             title,
             content,
             image: imageUrl,
@@ -61,17 +72,30 @@ const handleSubmit = async () => {
             created_at: new Date(),
           },
         ]);
-  
-      if (postError) throw postError;
-  
-      onClose(); 
+
+        
+
+      // Subtopic için post_subtopics tablosuna ekleme yap
+      const { error: subtopicError } = await supabase
+        .from("post_subtopics")
+        .insert([
+          {
+            post_id: newId,
+            subtopic_id: selectedSubtopicId,
+          },
+        ]);
+
+      if (subtopicError) throw subtopicError;
+
+      getPosts();
+      onClose();
     } catch (error) {
       setError((error as Error).message);
     } finally {
       setLoading(false);
     }
   };
-  
+
   if (!isOpen) return null;
 
   return (
@@ -79,6 +103,7 @@ const handleSubmit = async () => {
       <div className="bg-white p-6 rounded-lg shadow-lg max-w-lg w-full">
         <h2 className="text-2xl mb-4">Create a Post</h2>
         {error && <p className="text-red-500">{error}</p>}
+        
         <div className="mb-4">
           <input
             type="text"
@@ -97,6 +122,22 @@ const handleSubmit = async () => {
             onChange={(e) => setContent(e.target.value)}
           />
         </div>
+        
+        <div className="mb-4">
+          <select
+            value={selectedSubtopicId || ""}
+            onChange={(e) => setSelectedSubtopicId(e.target.value)}
+            className="w-full p-2 border rounded"
+          >
+            <option value="">Select a subtopic</option>
+            {subtopics?.map((subtopic) => (
+              <option key={subtopic.id} value={subtopic.id}>
+                {subtopic.name}
+              </option>
+            ))}
+          </select>
+        </div>
+
         <div className="mb-4">
           <input type="file" onChange={handleImageChange} />
         </div>

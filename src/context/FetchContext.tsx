@@ -2,7 +2,7 @@
 "use client";
 import React, { createContext, useState, useEffect, useContext, ReactNode } from 'react';
 import supabase from '@/lib/supabaseClient';
-import { PostDataTypes, FetchContextType, CommentsDataTypes, UsersDataTypes, FavoritesDataTypes } from '@/utils/types';
+import { PostDataTypes, FetchContextType, CommentsDataTypes, UsersDataTypes, FavoritesDataTypes, SubtopicsDataTypes } from '@/utils/types';
 
 // Başlangıç değerleri
 const FetchContext = createContext<FetchContextType | undefined>(undefined);
@@ -13,6 +13,7 @@ export const FetchProvider = ({ children }: { children: ReactNode }) => {
   const [posts, setPosts] = useState<PostDataTypes[] | null>([]);
   const [comments, setComments] = useState<CommentsDataTypes[] | null>([]);
   const [favorites, setFavorites] = useState<FavoritesDataTypes[] | null>([]);
+  const [subtopics, setSubtopics] = useState<SubtopicsDataTypes[] | null>([]);
   const [users, setUsers] = useState<UsersDataTypes[] | null>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -47,13 +48,7 @@ export const FetchProvider = ({ children }: { children: ReactNode }) => {
     }
   }, [postParamsSlug]);
 
-  useEffect(() => {
-      setLoading(true);
-    getUsers()
-    getPosts()
-    getComments()
-    getFavorites()   
-  }, [setComments]);
+
 
   const getComments = async () => {
       try {
@@ -61,6 +56,7 @@ export const FetchProvider = ({ children }: { children: ReactNode }) => {
          const { data: commentsData, error: commentsError } = await supabase
          .from('comments')
          .select('*') 
+         .order('created_at', {ascending: false})
          
          if (commentsError) throw commentsError;
          if (!commentsData) throw new Error(`No comment found`);
@@ -77,7 +73,8 @@ export const FetchProvider = ({ children }: { children: ReactNode }) => {
           // Tüm posts çekiyoruz
           const { data: postsData, error: postsError } = await supabase
           .from('posts')
-          .select('*');
+          .select('*')
+          .order('created_at', {ascending: false})
   
         if (postsError) throw postsError;
         if (!postsData) throw new Error(`No posts found`);
@@ -118,6 +115,7 @@ export const FetchProvider = ({ children }: { children: ReactNode }) => {
          const { data: favoritesData, error: favoritesError } = await supabase
          .from('favorites')
          .select('*') 
+          .order('created_at', {ascending: false})
          
          if (favoritesError) throw favoritesError;
          if (!favoritesData) throw new Error(`No favorites found`);
@@ -129,6 +127,31 @@ export const FetchProvider = ({ children }: { children: ReactNode }) => {
    }
   }
   
+  const getSubtopics = async () => {
+    try {
+         // Tum Subtopics verilerini alalim
+         const { data: subtopicsData, error: subtopicsError } = await supabase
+         .from('subtopics')
+         .select() 
+         
+         if (subtopicsError) throw subtopicsError;
+         if (!subtopicsData) throw new Error(`No favorites found`);
+         setSubtopics(subtopicsData); 
+    } catch (err) {
+       setError((err as Error).message);
+   } finally {
+     setLoading(false);
+   }
+  }
+  
+  useEffect(() => {
+    setLoading(true);
+  getUsers()
+  getPosts()
+  getComments()
+  getFavorites()  
+  getSubtopics() 
+}, [setComments, setPosts]);
 
   
   return (
@@ -141,6 +164,8 @@ export const FetchProvider = ({ children }: { children: ReactNode }) => {
       setComments,
       favorites,
       setFavorites,
+      subtopics,
+      setSubtopics,
       users, 
       setUsers,
       posts, 
@@ -150,7 +175,9 @@ export const FetchProvider = ({ children }: { children: ReactNode }) => {
       error,
       setError,
       filteredPosts,
-      setFilteredPosts
+      setFilteredPosts,
+      getPosts,
+      getComments
     }}>
       {children}
     </FetchContext.Provider>

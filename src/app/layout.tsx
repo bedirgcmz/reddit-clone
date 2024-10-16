@@ -3,10 +3,9 @@ import type { Metadata } from "next";
 import "../styles/globals.css";
 import Navbar from "@/components/Navbar";
 import Sidebar from "@/components/Sidebar";
-import { GeneralProvider, useGeneralContext } from '@/context/GeneralContext'; 
+import { GeneralProvider} from '@/context/GeneralContext'; 
 import { FetchProvider } from "@/context/FetchContext";
 import 'bootstrap/dist/css/bootstrap.min.css';
-import CreatePostModalButton from "@/components/CreatePostModalButton";
 
 export const metadata: Metadata = {
   title: "Reddit Clone",
@@ -18,7 +17,6 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  // const { currentUser } = useGeneralContext();
 
   return (
     <html lang="en">

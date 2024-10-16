@@ -1,9 +1,14 @@
 import {  FaRegHeart, FaComment, FaHeart, FaShare } from "react-icons/fa";
 import { TbArrowBigUp, TbArrowBigDown } from "react-icons/tb";
+import { MdDeleteForever } from "react-icons/md";
 import { useState } from "react";
 import { PostDataTypes } from "@/utils/types";
 import { useFetchContext } from "@/context/FetchContext";
+import { useGeneralContext } from "@/context/GeneralContext";
 import Link from "next/link";
+import supabase from "@/lib/supabaseClient";
+import  { mySwalAlert, confirmAlert } from "@/utils/helpers";
+
 
 
 type InteractionBoxProps = {
@@ -13,14 +18,61 @@ type InteractionBoxProps = {
 const InteractionBox: React.FC<InteractionBoxProps>  = ({singlePost}) => {
   const [count, setCount] = useState(0); 
   const {
-    setPostParamsSlug,
     comments, 
     setComments,
     users, 
+    posts,
     setUsers,
+    setPosts,
+    getPosts,
+    setSinglePost,
     loading,
+    setLoading,
     error,
+    setError
   } = useFetchContext();
+  const {
+    currentUser
+  } = useGeneralContext();
+
+  type DeleteFuncProps = {
+    pPostId: string
+  }
+// Asenkron bir fonksiyon olarak deletePost'u tanımlayın
+const deletePost = async ({ pPostId }: DeleteFuncProps) => {
+  const isConfirmed = await confirmAlert({
+    title: "Are you sure?",
+    text: "Do you really want to delete this post?",
+  });
+
+  if (isConfirmed) {
+    const { error: deleteError } = await supabase
+      .from("posts")
+      .delete()
+      .eq("id", pPostId);
+    
+      mySwalAlert({
+        icon: "success",
+        title: "successful!",
+        text: "This comment was deleted.",
+      });
+    if (deleteError) {
+      mySwalAlert({
+        icon: "error",
+        title: "Sorry!",
+        text: "This comment was not deleted.",
+      });
+      console.error("Error deleting post:", deleteError.message);
+      return;
+    }
+  }
+
+
+  // Update local state to remove the deleted post
+  getPosts(); 
+};
+
+
 
   return (
     <div className=" text-gray-600 py-4 flex justify-start items-center space-x-4">
@@ -61,6 +113,15 @@ const InteractionBox: React.FC<InteractionBoxProps>  = ({singlePost}) => {
         <FaShare />
         <span>Share</span>
       </div>
+      {/* Sil */}
+      {
+        currentUser?.id == singlePost.user_id && (
+          <button onClick={() => deletePost({ pPostId: singlePost.id })} className="flex cursor-pointer items-center space-x-2 bg-gray-200 rounded-full px-[12px] py-2 h-[40px]">
+            <MdDeleteForever className="text-xl"/>
+            <span>Delete</span>
+          </button>
+        )
+      }
 
     </div>
   );

@@ -142,7 +142,7 @@ const Sidebar = () => {
     <div className='overflow-auto '>
       {/* Md Sidebar*/}
       <div className="hidden md:flex flex-column w-[272px] bg-white h-full shadow-md">
-      {currentUser && <div className="mb-2 w-full flex justify-end px-4"><CreatePostModalButton /> </div>} 
+      {currentUser && <div className="mb-2 w-full flex justify-end px-4"><CreatePostModalButton specialStyles='' /> </div>} 
         <div className="p-4 w-full">
           <h2 className="text-xl text-gray-500">Topics</h2>
           <AccordionComponent setIsSidebarOpen={setIsSidebarOpen}/>
@@ -159,7 +159,7 @@ const Sidebar = () => {
             className="fixed top-0 left-0 w-[272px] pt-[20px] bg-white h-full shadow-md z-50"
             onClick={handleSidebarClick}  
           >
-      {currentUser && <div className="mb-2 w-full flex justify-end px-4"><CreatePostModalButton /> </div>} 
+      {currentUser && <div className="mb-2 w-full flex justify-end px-4"><CreatePostModalButton specialStyles='' /> </div>} 
             <button className="p-4 text-2xl float-right" onClick={() => setIsSidebarOpen(false)}>
               x
             </button>

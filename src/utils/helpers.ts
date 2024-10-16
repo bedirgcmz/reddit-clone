@@ -1,4 +1,4 @@
-import { CommentsDataTypes } from "./types";
+// import { CommentsDataTypes } from "./types";
 
 export function timeAgo(date: Date | string): string {
     const now = new Date();
@@ -24,9 +24,64 @@ export function timeAgo(date: Date | string): string {
     return "just now";
   }
 
- //sortByDate.ts
- export const sortCommentsByDate = (comments: CommentsDataTypes[]): CommentsDataTypes[] => {
-  return comments.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+//  //sortByDate.ts
+//  export const sortCommentsByDate = (comments: CommentsDataTypes[]): CommentsDataTypes[] => {
+//   return comments.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+// };
+
+
+import Swal from "sweetalert2";
+type SwalAlertProps = {
+  icon: "success" | "error" | "warning" | "info" | "question"; // SweetAlert2'nin desteklediği icon türleri
+  title: string;
+  text: string;
+};
+
+export const mySwalAlert = ({ icon, title, text }: SwalAlertProps) => {
+  return Swal.fire({
+    icon: icon, 
+    title: title, 
+    text: text,   
+  });
+};
+
+
+
+/* SweetAlert2'nin desteklediği ikonlar:
+   - success    : Başarılı durumlar için
+   - error      : Hata durumları için
+   - warning    : Uyarı durumları için
+   - info       : Bilgi verme amaçlı
+   - question   : Soru veya onaylama gerektiren durumlar için
+*/
+
+
+type ConfirmAlertProps = {
+  title: string;
+  text: string;
+  confirmButtonText?: string; // Opsiyonel özelleştirme için
+  cancelButtonText?: string;  // Opsiyonel özelleştirme için
+};
+
+export const confirmAlert = async ({ 
+  title, 
+  text, 
+  confirmButtonText = "Yes, do it!", 
+  cancelButtonText = "Cancel" 
+}: ConfirmAlertProps): Promise<boolean> => {
+  const result = await Swal.fire({
+    title: title,            // Başlık
+    text: text,              // Açıklama metni
+    icon: "warning",         // Uyarı ikonunu kullanıyoruz
+    showCancelButton: true,  // Cancel butonunu göster
+    confirmButtonColor: "#3085d6",  // OK butonunun rengi
+    cancelButtonColor: "#d33",      // Cancel butonunun rengi
+    confirmButtonText: confirmButtonText, // OK buton metni
+    cancelButtonText: cancelButtonText,   // Cancel buton metni
+  });
+
+  // Eğer kullanıcı OK butonuna tıklarsa `true`, aksi halde `false` döner
+  return result.isConfirmed;
 };
 
 

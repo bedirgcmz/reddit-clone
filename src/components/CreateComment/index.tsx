@@ -30,6 +30,7 @@ const CreateCommentInput:React.FC<InteractionBoxProps> = ({ singlePost }) => {
      const { data: commentsData, error: commentsError } = await supabase
      .from('comments')
      .select('*') 
+     .order('created_at', {ascending: false})
      
      if (commentsError) throw commentsError;
      if (!commentsData) throw new Error(`No comment found`);
@@ -44,7 +45,7 @@ const CreateCommentInput:React.FC<InteractionBoxProps> = ({ singlePost }) => {
   };
 
   return (
-    <div className="w-full">
+    <div className="w-full lg:w-[700px] px-4 py-2 mb-2">
       <input
         type="text"
         placeholder="Leave a comment..."

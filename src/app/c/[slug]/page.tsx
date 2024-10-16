@@ -3,11 +3,15 @@
 "use client";
 import { useEffect, useState } from "react";
 import { useFetchContext } from "@/context/FetchContext";
+import { useGeneralContext } from "@/context/GeneralContext";
 import { timeAgo } from "@/utils/helpers"; 
 import { TbPointFilled } from "react-icons/tb";
 import Link from "next/link";
 import supabase from "@/lib/supabaseClient";
 import { Post_SubtopicsDataTypes, SubtopicsDataTypes, TopicsDataTypes } from "@/utils/types";
+import InteractionBox from "@/components/InteractionBox";
+import PostCard from "@/components/PostCard";
+import CreateCommentInput from "@/components/CreateComment";
 
 const SubtopicPage = ({ params }: { params: { slug: string } }) => {
   const [topics, setTopics] = useState<TopicsDataTypes[] | null>([]);
@@ -24,6 +28,7 @@ const SubtopicPage = ({ params }: { params: { slug: string } }) => {
         filteredPosts, 
         setFilteredPosts
     } = useFetchContext();
+    const {currentUser} = useGeneralContext()
 
     const slug = params.slug
     useEffect(() =>{
@@ -107,43 +112,20 @@ const SubtopicPage = ({ params }: { params: { slug: string } }) => {
     if (error) return <p>Error: {error}</p>;
 
     return (
-        <div className="">
             <div className="">
                 <h1 className="text-2xl md:text-4xl">{subtopic?.name}</h1>
                 <p className="text-blue-200 text-sm mb-4">{topics?.find((tp) => tp.id == subtopic?.topic_id)?.name}</p>
                 {filteredPosts && filteredPosts.length > 0 ? (
                     filteredPosts.map((post) => (
-                        <div key={post.id} className="hover:bg-gray-100 rounded-lg p-4 mb-[20px] w-full lg:w-[700px]">
-                            <h5 className="flex justify-start items-center mb-[14px]">
-                                <img
-                                    className="rounded-full me-2"
-                                    src={users?.find((user) => user.id === post.user_id)?.image}
-                                    alt="user"
-                                    width={20}
-                                />
-                                <span>
-                                    r/{users?.find((user) => user.id === post.user_id)?.username}
-                                </span>
-                                <TbPointFilled className="mx-2 text-[8px] text-gray-600" />
-                                <span className="text-xs text-gray-500">
-                                    {timeAgo(post.created_at)}
-                                </span>
-                            </h5>
-                            <div>
-                                <Link legacyBehavior href={`posts/${post.slug}`}>
-                                    <h2 className="mb-2 w-full cursor-pointer">{post.title}</h2>
-                                </Link>
-                                {post.image && (
-                                    <img src={post.image} alt={post.title} className="w-full h-auto rounded-lg" />
-                                )}
-                            </div>
+                        <div key={post.id}>
+                        <PostCard post={post} />
+                        {currentUser && <CreateCommentInput singlePost={post} />}
                         </div>
-                    ))
+                        ))
                 ) : (
                     <p>No posts found for this subtopic......</p>
                 )}
             </div>
-        </div>
     );
     
 };

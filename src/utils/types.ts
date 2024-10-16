@@ -57,6 +57,8 @@ export type FetchContextType = {
     setComments: React.Dispatch<React.SetStateAction<CommentsDataTypes[] | null>>; 
     favorites: FavoritesDataTypes[] | null;
     setFavorites: React.Dispatch<React.SetStateAction<FavoritesDataTypes[] | null>>; 
+    subtopics:SubtopicsDataTypes[] | null; 
+    setSubtopics: React.Dispatch<React.SetStateAction<SubtopicsDataTypes[] | null>>; 
     users: UsersDataTypes[] | null; 
     setUsers: React.Dispatch<React.SetStateAction<UsersDataTypes[] | null>>; 
     posts: PostDataTypes[] | null; 
@@ -67,6 +69,8 @@ export type FetchContextType = {
     setError: React.Dispatch<React.SetStateAction<string | null>>; 
     filteredPosts: PostDataTypes[] | null; 
     setFilteredPosts: React.Dispatch<React.SetStateAction<PostDataTypes[] | null>>;
+    getPosts: () => Promise<void>
+    getComments: () => Promise<void>
 
     
   };
