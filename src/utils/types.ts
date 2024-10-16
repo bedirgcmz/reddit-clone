@@ -59,6 +59,8 @@ export type FetchContextType = {
     setFavorites: React.Dispatch<React.SetStateAction<FavoritesDataTypes[] | null>>; 
     subtopics:SubtopicsDataTypes[] | null; 
     setSubtopics: React.Dispatch<React.SetStateAction<SubtopicsDataTypes[] | null>>; 
+    topics:TopicsDataTypes[] | null; 
+    setTopics: React.Dispatch<React.SetStateAction<TopicsDataTypes[] | null>>; 
     users: UsersDataTypes[] | null; 
     setUsers: React.Dispatch<React.SetStateAction<UsersDataTypes[] | null>>; 
     posts: PostDataTypes[] | null; 

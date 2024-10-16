@@ -2,7 +2,7 @@
 "use client";
 import React, { createContext, useState, useEffect, useContext, ReactNode } from 'react';
 import supabase from '@/lib/supabaseClient';
-import { PostDataTypes, FetchContextType, CommentsDataTypes, UsersDataTypes, FavoritesDataTypes, SubtopicsDataTypes } from '@/utils/types';
+import { PostDataTypes, FetchContextType, CommentsDataTypes, UsersDataTypes, FavoritesDataTypes, SubtopicsDataTypes, TopicsDataTypes } from '@/utils/types';
 
 // Başlangıç değerleri
 const FetchContext = createContext<FetchContextType | undefined>(undefined);
@@ -14,6 +14,7 @@ export const FetchProvider = ({ children }: { children: ReactNode }) => {
   const [comments, setComments] = useState<CommentsDataTypes[] | null>([]);
   const [favorites, setFavorites] = useState<FavoritesDataTypes[] | null>([]);
   const [subtopics, setSubtopics] = useState<SubtopicsDataTypes[] | null>([]);
+  const [topics, setTopics] = useState<TopicsDataTypes[] | null>([]);
   const [users, setUsers] = useState<UsersDataTypes[] | null>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -102,7 +103,14 @@ export const FetchProvider = ({ children }: { children: ReactNode }) => {
   }
   const getTopics = async () => {
     try {
+        // Tum Topics verilerini alalim
+        const { data: subtopicsData, error: subtopicsError } = await supabase
+        .from('topics')
+        .select() 
         
+        if (subtopicsError) throw subtopicsError;
+        if (!subtopicsData) throw new Error(`No favorites found`);
+        setTopics(subtopicsData); 
     } catch (err) {
        setError((err as Error).message);
    } finally {
@@ -151,6 +159,7 @@ export const FetchProvider = ({ children }: { children: ReactNode }) => {
   getComments()
   getFavorites()  
   getSubtopics() 
+  getTopics()
 }, [setComments, setPosts]);
 
   
@@ -166,6 +175,8 @@ export const FetchProvider = ({ children }: { children: ReactNode }) => {
       setFavorites,
       subtopics,
       setSubtopics,
+      topics,
+      setTopics,
       users, 
       setUsers,
       posts, 
