@@ -26,7 +26,7 @@ const PostCard: React.FC<PostCardProps>  = ({post}) => {
         currentUser
       } = useGeneralContext();
   return (
-    <div key={post.id} className="hover:bg-gray-100 rounded-lg p-4 w-full lg:w-[700px]">
+    <div key={post.id} className="hover:bg-gray-100 rounded-lg p-4 pb-0 w-full lg:w-[700px]">
         <h5 className='flex justify-start items-center mb-[14px]'>
         <img className='rounded-full me-2 h-[20px] w-[20px]' src={ users?.find((user) => user.id == post.user_id)?.image } alt="user"/> 
         <span>

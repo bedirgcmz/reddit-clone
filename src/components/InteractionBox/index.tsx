@@ -66,32 +66,29 @@ const deletePost = async ({ pPostId }: DeleteFuncProps) => {
       return;
     }
   }
-
-
-  // Update local state to remove the deleted post
   getPosts(); 
 };
 
 
 
   return (
-    <div className=" text-gray-600 py-4 flex justify-start items-center space-x-4">
+    <div className=" text-gray-600 py-4 flex justify-between sm:justify-start items-center space-x-4">
       
       {/* Beğenme ve Beğenmeme Alanı */}
-      <div className="flex items-center space-x-2 bg-gray-200 rounded-full px-[12px] py-2 h-[40px]">
+      <div className="flex items-center space-x-1 sm:space-x-2 bg-gray-200 rounded-full px-[6px] sm:px-[12px] py-1 sm:py-2 h-[34px] sm:h-[40px] text-sm sm:text-xl">
         <TbArrowBigUp
-          className="cursor-pointer text-xl"
+          className="cursor-pointer "
           onClick={() => setCount(count + 1)} 
         />
         <span>{count}</span>
         <TbArrowBigDown
-          className="cursor-pointer text-xl"
+          className="cursor-pointer t"
           onClick={() => setCount(count - 1)} 
         />
       </div>
       
       {/* Yorum Yapma Alanı */}
-      <div className="flex cursor-pointer items-center space-x-2 bg-gray-200 rounded-full px-[12px] py-2 h-[40px]">
+      <div className="flex cursor-pointer items-center space-x-2 bg-gray-200 rounded-full px-[6px] sm:px-[12px] py-1 sm:py-2 h-[34px] sm:h-[40px] text-sm sm:text-xl">
         <Link href={`/posts/${singlePost.slug}`} passHref className="flex items-center justfy-center gap-1">
           <FaComment />
           <span>
@@ -103,20 +100,20 @@ const deletePost = async ({ pPostId }: DeleteFuncProps) => {
       </div>
 
       {/* Favorilere Ekle */}
-      <div className="flex items-center space-x-2 bg-gray-200 rounded-full px-[12px] py-2 h-[40px]">
+      <div className="flex items-center space-x-2 bg-gray-200 rounded-full px-[6px] sm:px-[12px] py-1 sm:py-2 h-[34px] sm:h-[40px] text-sm sm:text-xl">
         {/* <FaHeart className="cursor-pointer text-orange" /> */}
         <FaRegHeart className="cursor-pointer" />
       </div>
 
       {/* Paylaş */}
-      <div className="flex cursor-pointer items-center space-x-2 bg-gray-200 rounded-full px-[12px] py-2 h-[40px]">
+      <div className="flex cursor-pointer items-center space-x-1 sm:space-x-2 bg-gray-200 rounded-full px-[6px] sm:px-[12px] py-1 sm:py-2 h-[34px] sm:h-[40px] text-sm sm:text-xl">
         <FaShare />
         <span>Share</span>
       </div>
       {/* Sil */}
       {
         currentUser?.id == singlePost.user_id && (
-          <button onClick={() => deletePost({ pPostId: singlePost.id })} className="flex cursor-pointer items-center space-x-2 bg-gray-200 rounded-full px-[12px] py-2 h-[40px]">
+          <button onClick={() => deletePost({ pPostId: singlePost.id })} className="flex cursor-pointer items-center space-x-1 sm:space-x-2 bg-gray-200 rounded-full px-[6px] sm:px-[12px] py-1 sm:py-2 h-[34px] sm:h-[40px] text-sm sm:text-xl">
             <MdDeleteForever className="text-xl"/>
             <span>Delete</span>
           </button>

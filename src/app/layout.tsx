@@ -6,6 +6,7 @@ import Sidebar from "@/components/Sidebar";
 import { GeneralProvider} from '@/context/GeneralContext'; 
 import { FetchProvider } from "@/context/FetchContext";
 import 'bootstrap/dist/css/bootstrap.min.css';
+import GoBackButton from "@/components/GoBackButton";
 
 export const metadata: Metadata = {
   title: "Reddit Clone",

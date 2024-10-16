@@ -3,14 +3,13 @@ import { useEffect } from 'react';
 import { useFetchContext } from '@/context/FetchContext';
 import { useGeneralContext } from '@/context/GeneralContext';
 import Swal from 'sweetalert2';
-import Link from 'next/link';
 
 const ProfilePage = () => {
   const { currentUser } = useGeneralContext();
   const { posts, comments, favorites } = useFetchContext();
 
   useEffect(() => {
-    if (currentUser) {
+    if (currentUser && !currentUser.image) {
       setTimeout(() => {
         Swal.fire({
           title: 'Complete Your Profile',

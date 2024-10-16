@@ -15,12 +15,12 @@ export default function ProfileNavbar() {
   ];
 
   return (
-    <nav className="flex justify-center items-center gap-2 border-b pb-2">
+    <nav className="flex justify-center items-center gap-2 border-b pb-2 mr-2">
       {links.map((link) => (
         <Link legacyBehavior key={link.path} href={link.path}>
           <a
             onClick={() => setActiveLink(link.path)}
-            className={`py-2 px-4 text-sm font-medium transition-colors duration-200 hover:text-gray-600 hover:bg-gray-100
+            className={`py-2 px-2 sm:px-4 text-sm font-medium transition-colors duration-200 hover:text-gray-600 hover:bg-gray-100
               ${activeLink === link.path ? "border-b-2 border-orange-400" : ""}`}
           >
             {link.name}
