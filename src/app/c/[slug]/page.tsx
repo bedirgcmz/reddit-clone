@@ -119,7 +119,7 @@ const SubtopicPage = ({ params }: { params: { slug: string } }) => {
                     filteredPosts.map((post) => (
                         <div key={post.id}>
                         <PostCard post={post} />
-                        {currentUser && <CreateCommentInput singlePost={post} />}
+                        {/* {currentUser && <CreateCommentInput singlePost={post} />} */}
                         </div>
                         ))
                 ) : (

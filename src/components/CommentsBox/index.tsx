@@ -8,12 +8,14 @@ import { AiOutlineEdit } from "react-icons/ai";
 import { MdDelete, MdDeleteForever } from "react-icons/md";
 import UpdateCommentModal from "@/components/UpdateCommentModal";
 import supabase from "@/lib/supabaseClient";
+import ReplyInput from "@/components/ReplyInput";
 
 type CommentsBoxProps = {
   commentsProps: CommentsDataTypes[] | undefined;
+  parentCommentId?: string | null;  // Recursive yapıyı desteklemek için parentCommentId eklendi
 };
 
-const CommentsBox: React.FC<CommentsBoxProps> = ({ commentsProps }) => {
+const CommentsBox: React.FC<CommentsBoxProps> = ({ commentsProps, parentCommentId = null }) => {
   const { users, comments, posts, setError, getComments } = useFetchContext();
   const {
     currentUser,
@@ -24,8 +26,8 @@ const CommentsBox: React.FC<CommentsBoxProps> = ({ commentsProps }) => {
   } = useGeneralContext();
 
   const handleEditClick = (commentId: string) => {
-    setUpdateCommentId(commentId); // Yorum id'sini state'e yaz
-    setUpdateCommentModalOpen(true); // Modalı aç
+    setUpdateCommentId(commentId); 
+    setUpdateCommentModalOpen(true); 
   };
 
   const deleteComment = async (pCommentId: string) => {
@@ -60,7 +62,6 @@ const CommentsBox: React.FC<CommentsBoxProps> = ({ commentsProps }) => {
   };
 
 
-  // Asenkron bir fonksiyon olarak deletePostByOwnPost'u tanımlayın
   const deletePostByOwnPost = async (
     pCommentsId: string
   ) => {
@@ -100,8 +101,10 @@ const CommentsBox: React.FC<CommentsBoxProps> = ({ commentsProps }) => {
 
   return (
     <>
-      <ul className="comments ps-12 pb-8 pt-2 w-full lg:w-[700px]">
-        {commentsProps?.map((comment) => (
+      <ul className={`comments ps-12 pb-2 pt-2 w-full lg:w-[700px] ${parentCommentId ? 'ml-6' : ''}`}>
+        {commentsProps
+          ?.filter((comment) => comment.parent_id === parentCommentId) 
+          ?.map((comment) => (
           <li key={comment.id} className="p-2 ps-4 pt-4 relative flex flex-col">
             <span className="absolute top-0 left-0 flex items-center">
               <img
@@ -136,6 +139,11 @@ const CommentsBox: React.FC<CommentsBoxProps> = ({ commentsProps }) => {
               )}
             </span>
             <p className="text-sm text-gray-800">{comment.content}</p>
+
+             {/* ReplyInput bileşenini her yorumun altına ekle */}
+             <ReplyInput parentCommentId={comment.id} postId={comment.post_id} />
+            {/* Alt yorumları render etmek için recursive çağrı */}
+            <CommentsBox commentsProps={commentsProps} parentCommentId={comment.id} />
           </li>
         ))}
       </ul>
@@ -149,3 +157,4 @@ const CommentsBox: React.FC<CommentsBoxProps> = ({ commentsProps }) => {
 };
 
 export default CommentsBox;
+

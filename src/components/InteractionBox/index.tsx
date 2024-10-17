@@ -1,13 +1,13 @@
 import {  FaRegHeart, FaComment, FaHeart, FaShare } from "react-icons/fa";
 import { TbArrowBigUp, TbArrowBigDown } from "react-icons/tb";
 import { MdDeleteForever } from "react-icons/md";
-import { useState } from "react";
+import {  useState } from "react";
 import { PostDataTypes } from "@/utils/types";
 import { useFetchContext } from "@/context/FetchContext";
 import { useGeneralContext } from "@/context/GeneralContext";
 import Link from "next/link";
 import supabase from "@/lib/supabaseClient";
-import  { mySwalAlert, confirmAlert } from "@/utils/helpers";
+import  { mySwalAlert, confirmAlert, showLoginModalIfNotAuthenticated } from "@/utils/helpers";
 
 
 
@@ -17,23 +17,8 @@ type InteractionBoxProps = {
 
 const InteractionBox: React.FC<InteractionBoxProps>  = ({singlePost}) => {
   const [count, setCount] = useState(0); 
-  const {
-    comments, 
-    setComments,
-    users, 
-    posts,
-    setUsers,
-    setPosts,
-    getPosts,
-    setSinglePost,
-    loading,
-    setLoading,
-    error,
-    setError
-  } = useFetchContext();
-  const {
-    currentUser
-  } = useGeneralContext();
+  const {comments, getPosts,} = useFetchContext();
+  const {currentUser, setIsSigninModalOpen } = useGeneralContext();
 
   type DeleteFuncProps = {
     pPostId: string
@@ -70,6 +55,15 @@ const deletePost = async ({ pPostId }: DeleteFuncProps) => {
 };
 
 
+const handleComment = () => {
+  if (!currentUser) {
+    showLoginModalIfNotAuthenticated(currentUser !== null, () => {
+      setIsSigninModalOpen(true); 
+  } );
+  }
+}
+
+
 
   return (
     <div className=" text-gray-600 py-4 flex justify-between sm:justify-start items-center space-x-4">
@@ -88,15 +82,19 @@ const deletePost = async ({ pPostId }: DeleteFuncProps) => {
       </div>
       
       {/* Yorum Yapma Alanı */}
-      <div className="flex cursor-pointer items-center space-x-2 bg-gray-200 rounded-full px-[6px] sm:px-[12px] py-1 sm:py-2 h-[34px] sm:h-[40px] text-sm sm:text-xl">
-        <Link href={`/posts/${singlePost.slug}`} passHref className="flex items-center justfy-center gap-1">
-          <FaComment />
-          <span>
-            {
-            comments?.filter((cm) => cm.post_id == singlePost.id)?.length
-            }
-            </span>
-        </Link>
+      <div className="flex cursor-pointer relative items-center space-x-2 bg-gray-200 rounded-full px-[6px] sm:px-[12px] py-1 sm:py-2 h-[34px] sm:h-[40px] text-sm sm:text-xl">
+          <span onClick={() => {handleComment()}} className="flex items-center justfy-center gap-1">
+            <FaComment />
+            <span>
+              {
+                comments?.filter((cm) => cm.post_id == singlePost.id)?.length
+              }
+              </span>
+              {currentUser  && (
+            <Link href={`/posts/${singlePost.slug}`} passHref className="flex w-full h-full absolute top-0 left-0 items-center justify-center gap-1">
+            </Link>
+    )}
+          </span>
       </div>
 
       {/* Favorilere Ekle */}

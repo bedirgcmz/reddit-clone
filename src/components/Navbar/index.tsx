@@ -17,12 +17,12 @@ import { useFetchContext } from '@/context/FetchContext';
 
 
 const Navbar = () => {
-  const { isSidebarOpen, setIsSidebarOpen, currentUser } = useGeneralContext();
-  const [isSigninModalOpen, setIsSigninModalOpen] = useState(false);
-  const [isSignupModalOpen, setIsSignupModalOpen] = useState(false);
+  // const [isSigninModalOpen, setIsSigninModalOpen] = useState(false);
+  // const [isSignupModalOpen, setIsSignupModalOpen] = useState(false);
   const [isMoreMenuOpen, setIsMoreMenuOpen] = useState(false);
   const [searchText, setSearchText] = useState("");
-  const {getPosts, setPosts} = useFetchContext();
+  const {setPosts} = useFetchContext();
+  const { isSidebarOpen, setIsSidebarOpen, currentUser, isSigninModalOpen, setIsSigninModalOpen, isSignupModalOpen, setIsSignupModalOpen } = useGeneralContext();
   
 
   const handleOpenSignup = () => {

@@ -84,5 +84,26 @@ export const confirmAlert = async ({
   return result.isConfirmed;
 };
 
+export const showLoginModalIfNotAuthenticated = (
+  isAuthenticated: boolean,
+  openLoginModal: () => void
+) => {
+  if (!isAuthenticated) {
+    Swal.fire({
+      title: "Login Required",
+      text: "You need to log in to access this feature.",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Login",
+      cancelButtonText: "Cancel",
+      reverseButtons: true,
+    }).then((result) => {
+      if (result.isConfirmed) {
+        openLoginModal(); // Login modali açılır
+      }
+    });
+  }
+};
 
+ 
   

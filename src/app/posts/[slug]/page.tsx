@@ -69,8 +69,8 @@ const PostPage = ({ params }: { params: { slug: string } }) => {
       {singlePost ? (
         <>
           <PostCard post={singlePost} />
-          {currentUser && <CreateCommentInput singlePost={singlePost} />}
-          <CommentsBox commentsProps={targetPostsComments} />
+          {currentUser && <CreateCommentInput singlePost={singlePost}  />}
+          <CommentsBox commentsProps={targetPostsComments}  />
         </>
       ) : (
         <p>No post found</p>

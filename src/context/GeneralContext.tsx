@@ -4,10 +4,13 @@
 import { UsersDataTypes } from '@/utils/types';
 import React, { createContext, useState, useContext, ReactNode } from 'react';
 
-// GeneralContextType'e updateCommentId ve setUpdateCommentId'yi ekledim.
 type GeneralContextType = {
   isSidebarOpen: boolean;
   setIsSidebarOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  isSigninModalOpen: boolean;
+  setIsSigninModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  isSignupModalOpen: boolean;
+  setIsSignupModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
   isUpdateCommentModalOpen: boolean;
   setUpdateCommentModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
   currentUser: UsersDataTypes | null;
@@ -23,6 +26,8 @@ export const GeneralProvider = ({ children }: { children: ReactNode }) => {
   const [isUpdateCommentModalOpen, setUpdateCommentModalOpen] = useState(false);
   const [updateCommentId, setUpdateCommentId] = useState<string | null>(null); 
   const [currentUser, setCurrentUser] = useState<UsersDataTypes | null>(null); 
+  const [isSigninModalOpen, setIsSigninModalOpen] = useState(false);
+  const [isSignupModalOpen, setIsSignupModalOpen] = useState(false);
   
   return (
     // GeneralContext.Provider'a setUpdateCommentId ve updateCommentId eklendi.
@@ -35,7 +40,11 @@ export const GeneralProvider = ({ children }: { children: ReactNode }) => {
         isUpdateCommentModalOpen, 
         setUpdateCommentModalOpen, 
         updateCommentId, 
-        setUpdateCommentId 
+        setUpdateCommentId,
+        setIsSigninModalOpen, 
+        isSigninModalOpen, 
+        isSignupModalOpen, 
+        setIsSignupModalOpen
       }}
     >
       {children}

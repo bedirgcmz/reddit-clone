@@ -16,7 +16,7 @@ const SigninModal: React.FC<SigninModalProps> = ({ onClose, onOpenSignup }) => {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [error, setError] = useState<string | null>(null); 
-  const router = useRouter(); // useRouter'ı burada tanımlayın
+  const router = useRouter(); 
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();

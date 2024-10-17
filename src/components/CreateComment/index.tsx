@@ -46,8 +46,7 @@ const CreateCommentInput:React.FC<InteractionBoxProps> = ({ singlePost }) => {
 
   return (
     <div className="w-full lg:w-[700px] px-4 py-2 mb-2">
-      <input
-        type="text"
+      <textarea
         placeholder="Leave a comment..."
         className="w-full p-2 border border-gray-300 rounded"
         value={comment}
