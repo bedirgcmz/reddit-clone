@@ -3,7 +3,7 @@ import { useState, useEffect } from "react"; // useEffect ekleyin
 import { useFetchContext } from "@/context/FetchContext";
 import { useGeneralContext } from "@/context/GeneralContext";
 import supabase from "@/lib/supabaseClient"; 
-import { useRouter } from "next/navigation";
+// import { useRouter } from "next/navigation";
 
 interface SigninModalProps {
   onClose: () => void;
@@ -16,7 +16,7 @@ const SigninModal: React.FC<SigninModalProps> = ({ onClose, onOpenSignup }) => {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [error, setError] = useState<string | null>(null); 
-  const router = useRouter(); 
+  // const router = useRouter(); 
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -36,7 +36,7 @@ const SigninModal: React.FC<SigninModalProps> = ({ onClose, onOpenSignup }) => {
         const foundUser = users?.find((user) => user.email === email);
         if (foundUser) {
           setCurrentUser(foundUser);
-          router.push('/profile'); 
+          // router.push('/profile'); 
           onClose(); 
         } else {
           setError("User not found in the database.");
