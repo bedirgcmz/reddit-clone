@@ -57,9 +57,9 @@ const ReplyInput: React.FC<ReplyInputProps> = ({ parentCommentId, postId }) => {
   };
 
   return (
-    <div className="mt-2">
+    <div className="">
       <button
-        className="text-sm text-gray-500 px-1 py-1 hover:bg-gray-200 rounded-lg flex items-center"
+        className="text-xs text-gray-500 px-1 py-1 hover:bg-gray-200 rounded-lg flex items-center"
         onClick={handleReplyClick}
       >
         <FaComment className="me-1"/>
@@ -76,14 +76,14 @@ const ReplyInput: React.FC<ReplyInputProps> = ({ parentCommentId, postId }) => {
           />
           <div className="flex justify-end space-x-1">
             <button
-              className="mr-2 text-gray-600 flex items-center bg-orange-400 text-white px-2 py-1 rounded gap-1 "
+              className="mr-2 text-gray-600 flex items-center bg-orange-400 h-[27px] text-xs text-white px-2 py-0 rounded gap-1 "
               onClick={() => setReplyOpen(false)}
             >
               <IoMdClose />
               Cancel
             </button>
             <button
-              className="text-gray-600 bg-blue-400 flex items-center text-white px-2 py-1 rounded gap-1"
+              className="text-gray-600 bg-blue-400 flex items-center text-xs text-white px-2 py-0 rounded gap-1"
               onClick={handleCommit}
             >
               <IoMdCheckmark />

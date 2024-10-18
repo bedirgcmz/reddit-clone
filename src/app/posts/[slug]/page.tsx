@@ -70,7 +70,7 @@ const PostPage = ({ params }: { params: { slug: string } }) => {
         <>
           <PostCard post={singlePost} />
           {currentUser && <CreateCommentInput singlePost={singlePost}  />}
-          <CommentsBox commentsProps={targetPostsComments}  />
+          <div className='ml-2 w-full lg:w-[700px] '><CommentsBox commentsProps={targetPostsComments}  /></div>
         </>
       ) : (
         <p>No post found</p>
@@ -80,3 +80,4 @@ const PostPage = ({ params }: { params: { slug: string } }) => {
 };
 
 export default PostPage;
+//overflow-x-scroll

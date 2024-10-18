@@ -84,6 +84,9 @@ const PostCard: React.FC<PostCardProps> = ({ post }) => {
                 <span className='text-xs text-gray-500'>
                     {timeAgo(post.created_at)}
                 </span>
+                {
+                  post.updated_at && <span className='text-xs text-gray-400 ms-2 flex'>(edited<span className='hidden md:flex'>: {timeAgo(post.updated_at)}</span>)</span>
+                }
                 {currentUser?.id === post.user_id && (
                     <button
                         className='ms-2 text-lg text-orange-200 hover:text-orange-500'

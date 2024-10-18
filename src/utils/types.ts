@@ -7,6 +7,7 @@
     user_id: string;
     image: string;
     created_at: string;
+    updated_at: string;
   };
   export type UsersDataTypes = {
     id: string;
@@ -25,6 +26,7 @@
     post_id: string;
     parent_id: string;
     created_at: string;
+    updated_at: string;
   };
   export type FavoritesDataTypes = {
     id: string;

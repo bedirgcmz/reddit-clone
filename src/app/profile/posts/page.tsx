@@ -4,17 +4,32 @@ import { useFetchContext } from '@/context/FetchContext';
 import PostCard from '@/components/PostCard';
 import { useGeneralContext } from '@/context/GeneralContext'; 
 import { PostDataTypes } from '@/utils/types';
+import supabase from '@/lib/supabaseClient';
 
 const UserPosts = () => {
-  const { posts, loading, error } = useFetchContext(); 
+  const { posts, loading, setLoading, error } = useFetchContext(); 
   const { currentUser } = useGeneralContext(); 
-  const [userPosts, setUserPosts] = useState<PostDataTypes[]>([]); 
+  const [userPosts, setUserPosts] = useState<PostDataTypes[] | null>([]); 
 
-  useEffect(() => {
-    if (currentUser?.id && posts) {
-      const filteredPosts = posts.filter((post) => post.user_id === currentUser.id);
-      setUserPosts(filteredPosts);
+  useEffect( () => {
+
+      setLoading(true)
+    const getUserPosts = async () => {
+      try {
+          const { data: userPostsData, error: userPostsDta } = await supabase
+          .from("posts")
+          .select()
+          .eq("user_id", currentUser?.id)
+          .order('created_at', {ascending: false})
+
+          setUserPosts(userPostsData)
+      } catch (error) {
+          console.log(error);
+      } finally {
+        setLoading(false)
+      }
     }
+    getUserPosts()
   }, [currentUser, posts]); 
 
   if (loading) return <p>Loading...</p>;
@@ -23,10 +38,10 @@ const UserPosts = () => {
 
   return (
     <div className='flex flex-col items-center'>
-      {userPosts.length === 0 ? (
+      {userPosts?.length === 0 ? (
         <p>You have no posts yet.</p> 
       ) : (
-        userPosts.map((post) => <PostCard key={post.id} post={post} />) 
+        userPosts?.map((post) => <PostCard key={post.id} post={post} />) 
       )}
     </div>
   );

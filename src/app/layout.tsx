@@ -31,7 +31,7 @@ export default function RootLayout({
                 <div className="sidebar hide md:flex md:w-[280px] border-e">
                   <Sidebar />
                 </div>
-                <div className="main-content w-full overflow-auto">
+                <div className="main-content w-full overflow-y-auto">
                 {children}
                 </div>
               </main>

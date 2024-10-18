@@ -101,44 +101,51 @@ const CommentsBox: React.FC<CommentsBoxProps> = ({ commentsProps, parentCommentI
 
   return (
     <>
-      <ul className={`comments ps-12 pb-2 pt-2 w-full lg:w-[700px] ${parentCommentId ? 'ml-6' : ''}`}>
+      <ul className={`comments sm:ps-1 md:ps-2 pb-0 pt-2 w-full  scr ${parentCommentId ? 'ml-1 sm:ml-2 md:ml-4' : ''}`}>
         {commentsProps
           ?.filter((comment) => comment.parent_id === parentCommentId) 
           ?.map((comment) => (
-          <li key={comment.id} className="p-2 ps-4 pt-4 relative flex flex-col">
-            <span className="absolute top-0 left-0 flex items-center">
-              <img
-                className="rounded-full me-2 h-[20px] w-[20px]"
-                src={users?.find((e) => e.id == comment.user_id)?.image}
-                alt="user"
-              />
-              <span className="text-sm">
-                @{users?.find((e) => e.id == comment.user_id)?.username}
+          <li key={comment.id} className="p-2 md:ps-4 pt-4 relative flex flex-col max-w-[600px]">
+            <span className="absolute top-0 left-0 flex items-start sm:items-center  flex-col sm:flex-row">
+              <span className="flex items-center">
+                  <img
+                    className="rounded-full me-2 h-[20px] w-[20px]"
+                    src={users?.find((e) => e.id == comment.user_id)?.image}
+                    alt="user"
+                  />
+                  <span className="text-sm">
+                    @{users?.find((e) => e.id == comment.user_id)?.username}
+                  </span>
               </span>
-              <TbPointFilled className="mx-2 text-[8px] text-gray-600"></TbPointFilled>
-              <span className="text-xs text-gray-500  me-2">
-                {timeAgo(comment.created_at)}
+              <span className="flex items-center">
+                  <TbPointFilled className="mx-2 text-[8px] text-gray-600"></TbPointFilled>
+                  <span className="text-xs text-gray-500  me-2">
+                    {timeAgo(comment.created_at)}
+                  </span>
+                  {
+                      comment.updated_at && <span className='text-xs text-gray-400 mx-2 flex'>(edited<span className='hidden lg:flex'>: {timeAgo(comment.updated_at)}</span>)</span>
+                    }
+                  {currentUser?.id === comment.user_id && (
+                    <AiOutlineEdit
+                      className="mx-2 text-orange-200 cursor-pointer"
+                      onClick={() => handleEditClick(comment.id)}
+                    />
+                  )}
+                  {!(currentUser?.id === posts?.find((pt) => pt.id == comments?.find((cm) => cm.id == comment.id)?.post_id)?.user_id) && currentUser?.id === comment.user_id && (
+                    <MdDeleteForever
+                      className="me-2 text-orange-200 cursor-pointer aa"
+                      onClick={() => deleteComment(comment.id)}
+                    />
+                  )}
+                    {currentUser?.id === posts?.find((pt) => pt.id == comments?.find((cm) => cm.id == comment.id)?.post_id)?.user_id && (
+                    <MdDeleteForever
+                      className="me-2 text-orange-200 cursor-pointer"
+                      onClick={() => deletePostByOwnPost(comment.id)}
+                    />
+                  )}
               </span>
-              {currentUser?.id === comment.user_id && (
-                <AiOutlineEdit
-                  className="mx-2 text-orange-200 cursor-pointer"
-                  onClick={() => handleEditClick(comment.id)}
-                />
-              )}
-              {!(currentUser?.id === posts?.find((pt) => pt.id == comments?.find((cm) => cm.id == comment.id)?.post_id)?.user_id) && currentUser?.id === comment.user_id && (
-                <MdDeleteForever
-                  className="me-2 text-orange-200 cursor-pointer"
-                  onClick={() => deleteComment(comment.id)}
-                />
-              )}
-                {currentUser?.id === posts?.find((pt) => pt.id == comments?.find((cm) => cm.id == comment.id)?.post_id)?.user_id && (
-                <MdDelete
-                  className="me-2 text-orange-200 cursor-pointer"
-                  onClick={() => deletePostByOwnPost(comment.id)}
-                />
-              )}
             </span>
-            <p className="text-sm text-gray-800">{comment.content}</p>
+            <p className="text-sm text-gray-800 mt-[10px] sm:mt-0 max-w-[550px]">{comment.content}</p>
 
              {/* ReplyInput bileşenini her yorumun altına ekle */}
              <ReplyInput parentCommentId={comment.id} postId={comment.post_id} />

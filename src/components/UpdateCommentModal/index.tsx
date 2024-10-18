@@ -27,7 +27,7 @@ const UpdateCommentModal: React.FC<UpdateCommentModalProps> = ({ commentId }) =>
     try {
       const { error } = await supabase
         .from('comments')
-        .update({ content: commentContent })
+        .update({ content: commentContent, updated_at: new Date() })
         .eq('id', commentId);
         
       if (error) throw error;
