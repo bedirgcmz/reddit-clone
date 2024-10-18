@@ -22,54 +22,6 @@ export const FetchProvider = ({ children }: { children: ReactNode }) => {
   const [filteredPosts, setFilteredPosts] = useState<PostDataTypes[] | null>([]);
 
 
-  // useEffect(() => {
-  //   // const fetchPostAndAuthor = async () => {
-  //   //   setLoading(true);
-  //   //   try {
-  //   //     // 1. Adım: Post verisini slug'a göre alıyoruz
-  //   //     const { data: postData, error: postError } = await supabase
-  //   //       .from('posts')
-  //   //       .select('*')
-  //   //       .eq('slug', postParamsSlug)
-  //   //       .maybeSingle();
-
-  //   //     if (postError) throw postError;
-  //   //     if (!postData) throw new Error(`No post found for the provided slug: ${postParamsSlug}`);
-  //   //     setSinglePost(postData);
-
-  //   //   } catch (err) {
-  //   //     setError((err as Error).message);
-  //   //   } finally {
-  //   //     setLoading(false);
-  //   //   }
-  //   // };
-
-  //   if (postParamsSlug) {
-  //     // fetchPostAndAuthor();
-  //     getSinglePost()
-  //   }
-  // }, [postParamsSlug]);
-
-  // const getSinglePost = async () => {
-  //   setLoading(true);
-  //   try {
-  //     // 1. Adım: Post verisini slug'a göre alıyoruz
-  //     const { data: postData, error: postError } = await supabase
-  //       .from('posts')
-  //       .select('*')
-  //       .eq('slug', postParamsSlug)
-  //       .maybeSingle();
-
-  //     if (postError) throw postError;
-  //     if (!postData) throw new Error(`No post found for the provided slug: ${postParamsSlug}`);
-  //     setSinglePost(postData);
-
-  //   } catch (err) {
-  //     setError((err as Error).message);
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
   const getComments = async () => {
       try {
          // Tum Comments verilerini alalim
