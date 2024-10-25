@@ -1,6 +1,12 @@
+
+
 import supabase from "@/lib/supabaseClient";
 import { IoClose } from "react-icons/io5";
 import { useState } from "react";
+import Swal from "sweetalert2";  
+import withReactContent from "sweetalert2-react-content";
+
+const MySwal = withReactContent(Swal);
 
 interface SignupModalProps {
   onClose: () => void;
@@ -24,7 +30,14 @@ const SignupModal: React.FC<SignupModalProps> = ({ onClose, onOpenSignin }) => {
         .from("users-images")
         .upload(fileName, image);
 
-      if (uploadError) throw uploadError;
+      if (uploadError) {
+        MySwal.fire({
+          icon: 'error',
+          title: 'Image Upload Failed',
+          text: uploadError.message,
+        });
+        return;
+      }
 
       imageUrl = supabase.storage.from("users-images").getPublicUrl(fileName).data.publicUrl;
     }
@@ -35,35 +48,65 @@ const SignupModal: React.FC<SignupModalProps> = ({ onClose, onOpenSignin }) => {
         password,
       });
 
-      console.log(email);
-      if (authError) throw authError;
-      
+      if (authError) {
+        if (authError.message === "User already registered") {
+          MySwal.fire({
+            icon: 'warning',
+            title: 'User already registered',
+            text: 'This email is already associated with an account.',
+          });
+          return;
+        }
+        throw authError;
+      }
+
       if (data.user) {
-        // users tablosuna kullanıcıyı ekle
         const { error: insertError } = await supabase
           .from('users')
           .insert([
             {
-              password,
-              email,
               id: data.user.id,
+              email,
+              password,
               created_at: data.user.created_at,
               fullname: fullName,
-              username: username,
+              username,
               image: imageUrl,
               role: 'user',
             },
           ]);
 
-        if (insertError) throw insertError;
+        if (insertError) {
+          MySwal.fire({
+            icon: 'error',
+            title: 'Signup Failed',
+            text: insertError.message,
+          });
+          return;
+        }
 
-        console.log('User added to users table successfully');
+        MySwal.fire({
+          icon: 'success',
+          title: 'Signup Successful',
+          text: 'Your account has been created!',
+        }).then(() => {
+          onClose(); 
+          onOpenSignin(); 
+        });
       }
     } catch (error) {
       if (error instanceof Error) {
-        console.error('Error during signup:', error.message);
+        MySwal.fire({
+          icon: 'error',
+          title: 'Signup Failed',
+          text: error.message,
+        });
       } else {
-        console.error('An unknown error occurred during signup');
+        MySwal.fire({
+          icon: 'error',
+          title: 'Signup Failed',
+          text: 'An unknown error occurred during signup.',
+        });
       }
     }
   };
