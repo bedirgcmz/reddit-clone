@@ -13,7 +13,7 @@ import { FaUserCircle } from "react-icons/fa";
 import CreatePostModalButton from '../CreatePostModalButton';
 import supabase from '@/lib/supabaseClient';
 import { useFetchContext } from '@/context/FetchContext';
-
+import { useRouter } from "next/navigation";
 
 
 const Navbar = () => {
@@ -23,6 +23,7 @@ const Navbar = () => {
   const [searchText, setSearchText] = useState("");
   const {setPosts} = useFetchContext();
   const { isSidebarOpen, setIsSidebarOpen, currentUser, isSigninModalOpen, setIsSigninModalOpen, isSignupModalOpen, setIsSignupModalOpen } = useGeneralContext();
+  const router = useRouter();
   
 
   const handleOpenSignup = () => {
@@ -53,7 +54,9 @@ const Navbar = () => {
         console.error("Error fetching posts:", error.message);
         return [];
       }
-  
+      router.push('/');
+      console.log("route olmadi");
+      
       setPosts(posts)
     } catch (err) {
       console.error("Unexpected error:", err);
