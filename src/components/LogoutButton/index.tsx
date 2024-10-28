@@ -12,6 +12,7 @@ const LogoutButton: React.FC = () => {
       console.error("Logout error:", error);
     } else {
       setCurrentUser(null); 
+      localStorage.removeItem("userRedditClone");
     }
   };
 
