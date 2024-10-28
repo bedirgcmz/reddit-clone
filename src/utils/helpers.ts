@@ -46,16 +46,6 @@ export const mySwalAlert = ({ icon, title, text }: SwalAlertProps) => {
 };
 
 
-
-/* SweetAlert2'nin desteklediği ikonlar:
-   - success    : Başarılı durumlar için
-   - error      : Hata durumları için
-   - warning    : Uyarı durumları için
-   - info       : Bilgi verme amaçlı
-   - question   : Soru veya onaylama gerektiren durumlar için
-*/
-
-
 type ConfirmAlertProps = {
   title: string;
   text: string;
@@ -102,6 +92,20 @@ export const showLoginModalIfNotAuthenticated = (
         openLoginModal(); // Login modali açılır
       }
     });
+  }
+};
+
+// helpers/localStorage.ts
+export const setLocalStorage = (key: string, value: any) => {
+  if (typeof window !== 'undefined') {
+    window.localStorage.setItem(key, JSON.stringify(value));
+  }
+};
+
+export const getLocalStorage = (key: string) => {
+  if (typeof window !== 'undefined') {
+    const item = window.localStorage.getItem(key);
+    return item ? JSON.parse(item) : null;
   }
 };
 

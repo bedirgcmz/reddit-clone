@@ -1,8 +1,9 @@
 
 
 "use client";
+import { getLocalStorage } from '@/utils/helpers';
 import { UsersDataTypes } from '@/utils/types';
-import React, { createContext, useState, useContext, ReactNode } from 'react';
+import React, { createContext, useState, useContext, ReactNode, useEffect } from 'react';
 
 type GeneralContextType = {
   isSidebarOpen: boolean;
@@ -29,8 +30,14 @@ export const GeneralProvider = ({ children }: { children: ReactNode }) => {
   const [isSigninModalOpen, setIsSigninModalOpen] = useState(false);
   const [isSignupModalOpen, setIsSignupModalOpen] = useState(false);
   
+  useEffect(() => {
+    if(getLocalStorage("userRedditClone")){
+      setCurrentUser(getLocalStorage("userRedditClone"))
+    }
+  },[])
   return (
     // GeneralContext.Provider'a setUpdateCommentId ve updateCommentId eklendi.
+
     <GeneralContext.Provider 
       value={{ 
         isSidebarOpen, 

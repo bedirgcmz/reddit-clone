@@ -122,13 +122,16 @@ const UserComments: React.FC = () => {
                     />
                 </span>
                 <p className="text-sm text-gray-800">{comment.content}</p>
-                <Link
-                  href={`/posts/${posts?.find((post) => post.id === comment.post_id)?.slug}`}
-                  className="text-blue-200 mt-1 hover:text-blue-500 underline" 
-                >
-                  {/* Yorumun ait olduğu postun adı */}
-                  {posts?.find((post) => post.id === comment.post_id)?.title}
-                </Link>
+                <span className='flex items-center gap-2  mt-1 bg-gray-100 p-2'>
+                  <span className='text-gray-500'>Related post link:</span>
+                  <Link
+                    href={`/posts/${posts?.find((post) => post.id === comment.post_id)?.slug}`}
+                    className="text-blue-200 hover:text-blue-500 underline" 
+                  >
+                    {/* Yorumun ait olduğu postun adı */}
+                    {posts?.find((post) => post.id === comment.post_id)?.title}
+                  </Link>
+                </span>
 
               </div>
           </li>

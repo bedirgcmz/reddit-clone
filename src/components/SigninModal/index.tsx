@@ -3,6 +3,7 @@ import { useState, useEffect } from "react"; // useEffect ekleyin
 import { useFetchContext } from "@/context/FetchContext";
 import { useGeneralContext } from "@/context/GeneralContext";
 import supabase from "@/lib/supabaseClient"; 
+import { setLocalStorage } from "@/utils/helpers";
 // import { useRouter } from "next/navigation";
 
 interface SigninModalProps {
@@ -36,7 +37,7 @@ const SigninModal: React.FC<SigninModalProps> = ({ onClose, onOpenSignup }) => {
         const foundUser = users?.find((user) => user.email === email);
         if (foundUser) {
           setCurrentUser(foundUser);
-          // router.push('/profile'); 
+          setLocalStorage('userRedditClone', foundUser)
           onClose(); 
         } else {
           setError("User not found in the database.");
