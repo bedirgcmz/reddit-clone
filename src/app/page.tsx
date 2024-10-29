@@ -18,6 +18,7 @@ export default function Home() {
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>{error}</p>;
+  if (posts?.length == 0 ) return <p className='text-orange-300'>We couldn't find any posts for this search. Try a new search.</p>;
 
   // posts dizisi üzerinde map fonksiyonu ile döngü yapıyoruz.
   return (
