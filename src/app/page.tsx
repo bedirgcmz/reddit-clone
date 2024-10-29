@@ -1,6 +1,7 @@
 "use client";
 import { useFetchContext } from '@/context/FetchContext';
 import PostCard from '@/components/PostCard';
+import { useEffect } from 'react';
 export const dynamic = 'force-dynamic';
 
 export default function Home() {
@@ -8,11 +9,15 @@ export default function Home() {
     posts,
     loading,
     error,
+    setError
   } = useFetchContext();
 
+  useEffect(() => {
+    if(posts) setError(null)
+  },[])
 
   if (loading) return <p>Loading...</p>;
-  if (error) return <p>Error: {error}</p>;
+  if (error) return <p>{error}</p>;
 
   // posts dizisi üzerinde map fonksiyonu ile döngü yapıyoruz.
   return (

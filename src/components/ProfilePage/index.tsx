@@ -1,12 +1,35 @@
 "use client"
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useFetchContext } from '@/context/FetchContext';
 import { useGeneralContext } from '@/context/GeneralContext';
 import Swal from 'sweetalert2';
+import { FavoritesDataTypes } from '@/utils/types';
+import supabase from '@/lib/supabaseClient';
+import Link from 'next/link';
 
 const ProfilePage = () => {
   const { currentUser } = useGeneralContext();
-  const { posts, comments, favorites } = useFetchContext();
+  const { posts, comments, setError, setLoading } = useFetchContext();
+  const [favorites, setfavorites] = useState<FavoritesDataTypes[] | null>([])
+
+  const getFavorites = async () => {
+    try {
+       // Tum Comments verilerini alalim
+       const { data: favoritesData, error: favoritesError } = await supabase
+       .from('favorites')
+       .select('*') 
+       .order('created_at', {ascending: false})
+       
+       if (favoritesError) throw favoritesError;
+       if (!favoritesData) throw new Error(`No favorites found`);
+       setfavorites(favoritesData); 
+      
+   } catch (err) {
+      setError((err as Error).message);
+  } finally {
+    setLoading(false);
+  }
+}
 
   useEffect(() => {
     if (currentUser && !currentUser.image) {
@@ -19,15 +42,19 @@ const ProfilePage = () => {
         });
       }, 2000);
     }
+    getFavorites()
   }, [currentUser]);
 
   if (!currentUser) {
     return <div className='text-orange text-xl'>Please log in to view this page.</div>;
   }
 
+
+
   const postCount = posts?.filter(post => post.user_id === currentUser.id).length || 0;
   const commentCount = comments?.filter(comment => comment.user_id === currentUser.id).length || 0;
   const favoriteCount = favorites?.filter(fav => fav.user_id === currentUser.id).length || 0;
+  
 
   const renderProfileImage = () => {
     if (currentUser.image) {
@@ -70,7 +97,9 @@ const ProfilePage = () => {
         </div>
 
         <div className="text-center mt-6">
-          <button className="px-4 py-2 bg-orange-500 text-white rounded-lg shadow-md hover:bg-orange-600">Update Profile</button>
+          <Link href="/profile/account" >
+            <button className="px-4 py-2 bg-orange-500 text-white rounded-lg shadow-md hover:bg-orange-600">Update Profile</button>
+          </Link>
         </div>
       </div>
     </div>

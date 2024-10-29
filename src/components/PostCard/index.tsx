@@ -46,7 +46,6 @@ const PostCard: React.FC<PostCardProps> = ({ post }) => {
         imageUrl = supabase.storage.from("post-images").getPublicUrl(fileName).data.publicUrl;
       } else {
         imageUrl = posts?.find((pt) => pt.id == postId)?.image
-        console.log(postId);
       }
 
       const { data: postData, error: postError } = await supabase
@@ -60,8 +59,7 @@ const PostCard: React.FC<PostCardProps> = ({ post }) => {
         .eq('id', postId); 
 
       if (postError) throw postError;
-
-      console.log("Post successfully updated!", postData);
+      
       toast.success('Post has been updated')
       getPosts();
     } catch (error) {

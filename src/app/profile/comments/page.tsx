@@ -10,10 +10,10 @@ import { confirmAlert, mySwalAlert, timeAgo } from '@/utils/helpers';
 import UpdateCommentModal from '@/components/UpdateCommentModal';
 import supabase from '@/lib/supabaseClient';
 import { CommentsDataTypes } from '@/utils/types';
-import CommentsBox from '@/components/CommentsBox';
 
 const UserComments: React.FC = () => {
-  const { comments, posts, users, getComments, setError, setLoading, loading, error } = useFetchContext();
+  const [error, setError] = useState<string | null>(null);
+  const { comments, posts, users, getComments,  setLoading, loading } = useFetchContext();
   const { currentUser,  isUpdateCommentModalOpen,
     setUpdateCommentModalOpen,
     updateCommentId,
@@ -56,7 +56,6 @@ const UserComments: React.FC = () => {
         }
     };
 
-    // const filteredComments = comments?.filter((cm) => cm.user_id == currentUser?.id)
 
     useEffect( () => {
       setLoading(true)
@@ -70,24 +69,25 @@ const UserComments: React.FC = () => {
 
           setUserComments(userCommentsData || [])
       } catch (error) {
-          console.log(error);
+          setError((error as Error).message);
       } finally {
         setLoading(false)
       }
     }
     getUserComments()
   }, [currentUser, comments]);
-   
+
 
   if (loading) return <p>Loading...</p>;
-  if (error) return <p>Error: {error}</p>;
-  if (!currentUser) return <p>Please log in to see your posts.</p>; 
+  if (error) return <p>{error}</p>;
+  if (!currentUser) return <p>Please log in to see your comments.</p>; 
+  if (!userComments || userComments.length == 0) return <p className='text-orange-300'>You haven't commented yet</p>; 
 
   return (
-    <div className='overflow-x-scroll pl-2'>
-      <ul className="comments ps-12 pb-8 pt-2 w-full lg:w-[700px]">
+    <div className='overflow-x-scroll px-2  mb-4'>
+      <ul className="comments md:ps-12 pb-8 pt-2 w-full lg:w-[700px]">
         {userComments?.map((comment) => (
-          <li key={comment.id} className="p-2 ps-4 py-4 border-b relative flex flex-col ">
+          <li key={comment.id} className="p-2 md:ps-4 py-4 border-b relative flex flex-col ">
               {
                 comment.parent_id && 
             <div className='text-gray-400 text-sm'>

@@ -9,15 +9,14 @@ export default function RootLayout({
   }>) {
   
     return (
-      
-                <main className="flex flex-col md:gap-2 h-calc">
-                  <div className="">
-                    <ProfilePage />
-                    <ProfileNavbar />
-                  </div>
-                  <div className="aa">
-                  {children}
-                  </div>
-                </main>
+          <main className="flex flex-col md:gap-2 h-calc">
+            <div className="">
+              <ProfilePage />
+              <ProfileNavbar />
+            </div>
+            <div className="aa">
+            {children}
+            </div>
+          </main>
     );
   }
