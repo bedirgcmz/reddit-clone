@@ -77,7 +77,6 @@ const UserComments: React.FC = () => {
     }
     getUserComments()
   }, [currentUser, comments]);
-  console.log(userComments);
    
 
   if (loading) return <p>Loading...</p>;

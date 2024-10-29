@@ -88,23 +88,6 @@ export const FetchProvider = ({ children }: { children: ReactNode }) => {
      setLoading(false);
    }
   }
-  const getFavorites = async () => {
-    try {
-         // Tum Favorites verilerini alalim
-         const { data: favoritesData, error: favoritesError } = await supabase
-         .from('favorites')
-         .select('*') 
-          .order('created_at', {ascending: false})
-         
-         if (favoritesError) throw favoritesError;
-         if (!favoritesData) throw new Error(`No favorites found`);
-         setFavorites(favoritesData); 
-    } catch (err) {
-       setError((err as Error).message);
-   } finally {
-     setLoading(false);
-   }
-  }
   
   const getSubtopics = async () => {
     try {
@@ -128,7 +111,6 @@ export const FetchProvider = ({ children }: { children: ReactNode }) => {
     getUsers()
     getPosts()
     getComments()
-    getFavorites()  
     getSubtopics() 
     getTopics()
 }, [setComments, setPosts]);
@@ -160,7 +142,7 @@ export const FetchProvider = ({ children }: { children: ReactNode }) => {
       filteredPosts,
       setFilteredPosts,
       getPosts,
-      getComments
+      getComments,
     }}>
       {children}
     </FetchContext.Provider>

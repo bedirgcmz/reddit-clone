@@ -6,7 +6,9 @@ import { useGeneralContext } from "@/context/GeneralContext";
 import supabase from "@/lib/supabaseClient";
 import { useFetchContext } from "@/context/FetchContext";
 import { v4 as uuidv4 } from 'uuid';
+import { toast } from 'sonner'
 
+//CreatePostModalButton componentinden geliyorlar
 type CreatePostModalProps = {
   isOpen: boolean;
   onClose: () => void;
@@ -73,8 +75,6 @@ export default function CreatePostModal({ isOpen, onClose }: CreatePostModalProp
           },
         ]);
 
-        
-
       // Subtopic için post_subtopics tablosuna ekleme yap
       const { error: subtopicError } = await supabase
         .from("post_subtopics")
@@ -89,12 +89,27 @@ export default function CreatePostModal({ isOpen, onClose }: CreatePostModalProp
 
       getPosts();
       onClose();
+      toast.success("New post has been created")
+      setContent("")
+      setTitle("")
+      setImage(null)
+      setSelectedSubtopicId(null)
+      setError(null)
     } catch (error) {
       setError((error as Error).message);
     } finally {
       setLoading(false);
     }
   };
+
+  const closeCreatePostModal = () => {
+    onClose()
+    setContent("")
+      setTitle("")
+      setImage(null)
+      setSelectedSubtopicId(null)
+      setError(null)
+  }
 
   if (!isOpen) return null;
 
@@ -142,7 +157,7 @@ export default function CreatePostModal({ isOpen, onClose }: CreatePostModalProp
           <input type="file" onChange={handleImageChange} />
         </div>
         <div className="flex justify-end space-x-2">
-          <button className="px-4 py-2 bg-gray-300 rounded" onClick={onClose}>
+          <button className="px-4 py-2 bg-gray-300 rounded" onClick={closeCreatePostModal}>
             Cancel
           </button>
           <button className="px-4 py-2 bg-blue-500 text-white rounded" onClick={handleSubmit} disabled={loading}>

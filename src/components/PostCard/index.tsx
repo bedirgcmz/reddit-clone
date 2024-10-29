@@ -10,6 +10,8 @@ import { useGeneralContext } from '@/context/GeneralContext';
 import { FaEdit } from 'react-icons/fa';
 import UpdatePostModal from '../UpdatePostModal'; // Modal bileşenini içe aktar
 import supabase from '@/lib/supabaseClient';
+import { toast } from 'sonner'
+
 
 type PostCardProps = {
     post: PostDataTypes;
@@ -17,13 +19,7 @@ type PostCardProps = {
 
 const PostCard: React.FC<PostCardProps> = ({ post }) => {
     const {
-        setPostParamsSlug,
-        comments,
-        setComments,
         users,
-        setUsers,
-        loading,
-        error,
         posts,
         getPosts
     } = useFetchContext();
@@ -66,6 +62,7 @@ const PostCard: React.FC<PostCardProps> = ({ post }) => {
       if (postError) throw postError;
 
       console.log("Post successfully updated!", postData);
+      toast.success('Post has been updated')
       getPosts();
     } catch (error) {
       console.error("Error updating post:", error);
@@ -101,7 +98,7 @@ const PostCard: React.FC<PostCardProps> = ({ post }) => {
                     <h2 className='mb-2 w-full cursor-pointer'>{post.title}</h2>
                 </Link>
                 <Link legacyBehavior href={`/posts/${post.slug}`}>
-                    <img src={post.image} alt={post.title} className="w-full h-auto rounded-lg object-cover max-h-[500px]" />
+                    <img src={post.image} alt={post.title} className="w-full h-auto rounded-lg object-cover max-h-[500px] cursor-pointer" />
                 </Link>
                 <InteractionBox singlePost={post} />
             </div>

@@ -8,6 +8,7 @@ import { useGeneralContext } from "@/context/GeneralContext";
 import Link from "next/link";
 import supabase from "@/lib/supabaseClient";
 import  { mySwalAlert, confirmAlert, showLoginModalIfNotAuthenticated } from "@/utils/helpers";
+import FavoriteButton from "../FavoriteButton";
 
 
 
@@ -63,6 +64,20 @@ const handleComment = () => {
   }
 }
 
+const addPostToFavoritsList = async (pPostId : string, pUserId: string | undefined) => {
+  const { data } = await supabase
+  .from("favorites")
+  .insert([
+    {post_id: pPostId, user_id: pUserId}
+  ])
+}
+const deletePostFromFavoritsList = async (pPostId : string, pUserId: string | undefined) => {
+  const { data } = await supabase
+  .from("favorites")
+  .delete()
+  .eq("user_id", pUserId)
+  .eq("post_id", pPostId)
+}
 
 
   return (
@@ -99,8 +114,9 @@ const handleComment = () => {
 
       {/* Favorilere Ekle */}
       <div className="flex items-center space-x-2 bg-gray-200 rounded-full px-[6px] sm:px-[12px] py-1 sm:py-2 h-[34px] sm:h-[40px] text-sm sm:text-xl">
-        {/* <FaHeart className="cursor-pointer text-orange" /> */}
-        <FaRegHeart className="cursor-pointer" />
+        {/* <FaHeart className="cursor-pointer text-orange" onClick={() => deletePostFromFavoritsList(singlePost.id, currentUser?.id)}/>
+        <FaRegHeart className="cursor-pointer" onClick={() => addPostToFavoritsList(singlePost.id, currentUser?.id)}/> */}
+        <FavoriteButton singlePostId={singlePost.id} currentUserId={currentUser?.id}/>
       </div>
 
       {/* Paylaş */}

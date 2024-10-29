@@ -6,7 +6,7 @@ import Sidebar from "@/components/Sidebar";
 import { GeneralProvider} from '@/context/GeneralContext'; 
 import { FetchProvider } from "@/context/FetchContext";
 import 'bootstrap/dist/css/bootstrap.min.css';
-import GoBackButton from "@/components/GoBackButton";
+import { Toaster} from 'sonner'
 
 export const metadata: Metadata = {
   title: "Reddit Clone",
@@ -32,6 +32,7 @@ export default function RootLayout({
                   <Sidebar />
                 </div>
                 <div className="main-content w-full overflow-y-auto">
+                <Toaster richColors position="top-right" />
                 {children}
                 </div>
               </main>

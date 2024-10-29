@@ -3,6 +3,7 @@ import { useFetchContext } from '@/context/FetchContext';
 import { useGeneralContext } from '@/context/GeneralContext';
 import { AiFillCloseCircle } from 'react-icons/ai';
 import supabase from '@/lib/supabaseClient';
+import { toast } from 'sonner'
 
 type UpdateCommentModalProps = {
   commentId: string;
@@ -34,6 +35,7 @@ const UpdateCommentModal: React.FC<UpdateCommentModalProps> = ({ commentId }) =>
 
      // Yorumları tekrar çek
      getComments();
+     toast.success('Post has been updated')
 
       setUpdateCommentModalOpen(false); 
     } catch (err) {
@@ -45,7 +47,7 @@ const UpdateCommentModal: React.FC<UpdateCommentModalProps> = ({ commentId }) =>
 
   return (
     isUpdateCommentModalOpen && (
-      <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+      <div className="fixed inset-0 bg-black bg-opacity-25 flex justify-center items-center z-50">
         <div className="bg-white p-6 rounded-lg w-96">
           <div className="flex justify-between items-center">
             <h2 className="text-lg font-semibold">Update Comment</h2>

@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
-import { PostDataTypes } from '@/utils/types'; // PostDataTypes türünü import et
+import { PostDataTypes } from '@/utils/types'; 
 
 type UpdatePostModalProps = {
   isOpen: boolean;
   onClose: () => void;
-  post: PostDataTypes; // Post objesi tipi
-  onUpdate: (postId: string, updatedPost: { title: string; content: string; image: File | null }) => void; // Güncelleme fonksiyonu tipi
+  post: PostDataTypes; 
+  onUpdate: (postId: string, updatedPost: { title: string; content: string; image: File | null }) => void; 
 };
 
 const UpdatePostModal: React.FC<UpdatePostModalProps> = ({ isOpen, onClose, post, onUpdate }) => {
@@ -14,6 +14,7 @@ const UpdatePostModal: React.FC<UpdatePostModalProps> = ({ isOpen, onClose, post
   const [image, setImage] = useState<File | null>(null); 
 
   const handleUpdate = () => {
+    // Post Card componentinden geliyor
     onUpdate(post.id, { title, content, image });
     onClose(); 
   };
@@ -42,7 +43,7 @@ const UpdatePostModal: React.FC<UpdatePostModalProps> = ({ isOpen, onClose, post
           onChange={(e) => setImage(e.target.files?.[0] || null)} 
           className="mt-2"
         />
-        <button onClick={handleUpdate} className="mt-4 bg-blue-500 text-white p-2 rounded">
+        <button onClick={handleUpdate} className="mt-4 bg-blue-500 text-white p-2 rounded mr-2">
           Update
         </button>
         <button onClick={onClose} className="mt-2 bg-gray-500 text-white p-2 rounded">
