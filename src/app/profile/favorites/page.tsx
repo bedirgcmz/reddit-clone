@@ -5,6 +5,7 @@ import { useFetchContext } from "@/context/FetchContext";
 import { useGeneralContext } from '@/context/GeneralContext';
 import supabase from '@/lib/supabaseClient';
 import { PostDataTypes } from '@/utils/types';
+import { log } from 'console';
 
 const UserFavorites = () => {
   const { setError, setLoading } = useFetchContext();
@@ -24,13 +25,15 @@ const UserFavorites = () => {
       if (favoritesError) throw favoritesError;
       if (!favoritePosts || favoritePosts.length === 0) throw new Error("No favorite posts found");
 
+      // favoritePosts [{post_id: djijsdi}...] seklinde geliyor. Onu bir id arrey haline getiriyoruz
       const postIds = favoritePosts.map((fav) => fav.post_id);
-
+      
+      
       // Favori post id'lerine göre posts tablosundan postları çekiyoruz
       const { data: postsData, error: postsError } = await supabase
         .from('posts')
         .select('*')
-        .in('id', postIds)
+        .in('id', postIds) //Burada id sutununa bakiyoruz ve eger postIds dizisinden biri ile eslesirse, onu getiriyoruz.
         .order('created_at', { ascending: false });
 
       if (postsError) throw postsError;

@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { FaHeart, FaRegHeart } from "react-icons/fa";
 import supabase from "@/lib/supabaseClient";
-import { FavoritesDataTypes } from "@/utils/types";
 
 interface Props {
   singlePostId: string;

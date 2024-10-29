@@ -31,7 +31,7 @@ const ProfilePage = () => {
 
   const renderProfileImage = () => {
     if (currentUser.image) {
-      return <img src={currentUser.image} alt="Profile" className="w-24 h-24 rounded-full border-4 border-white" />;
+      return <img src={currentUser.image} alt="Profile" className="w-24 h-24 rounded-full border-4 border-white object-cover" />;
     }
     return (
       <div className="w-20 h-20 flex items-center justify-center rounded-full bg-orange-500 text-white text-xl">
