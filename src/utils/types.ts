@@ -9,6 +9,14 @@
     created_at: string;
     updated_at: string;
   };
+  export type AuthorDataTypes = {
+    id: string;
+    username: string;
+    image: string;
+  };
+  export type PostWithAuthorDataTypes = PostDataTypes & {
+    author: AuthorDataTypes;
+  };
   export type UsersDataTypes = {
     id: string;
     fullname: string;
@@ -19,7 +27,8 @@
     password: string;
     created_at: string;
   };
-  export type CommentsDataTypes = {
+  export type CommentWithAuthorDataTypes = {
+    post: any;
     id: string;
     content: string;
     user_id: string;
@@ -27,7 +36,12 @@
     parent_id: string;
     created_at: string;
     updated_at: string;
+    author: {
+      username: string;
+      image: string;
+    };
   };
+  
   export type FavoritesDataTypes = {
     id: string;
     user_id: string;
@@ -50,14 +64,26 @@
     post_id: string;
   };
 
+// PostWithAuthorAndSubtopicDataTypes (Post verisi + Author + Subtopic ve Topic bilgisi)
+export interface PostWithAuthorAndSubtopicDataTypes extends PostWithAuthorDataTypes {
+    subtopic: {
+        id: string;
+        name: string;
+        topic: TopicsDataTypes;
+    };
+}
+  
+
 
 export type FetchContextType = {
-    singlePost: PostDataTypes | null;
-    setSinglePost: React.Dispatch<React.SetStateAction<PostDataTypes | null>>;
+    singlePost: PostWithAuthorDataTypes | null;
+    setSinglePost: React.Dispatch<React.SetStateAction<PostWithAuthorDataTypes | null>>;
     postParamsSlug: string | null;
     setPostParamsSlug: React.Dispatch<React.SetStateAction<string | null>>;
-    comments: CommentsDataTypes[] | null; 
-    setComments: React.Dispatch<React.SetStateAction<CommentsDataTypes[] | null>>; 
+    // comments: CommentsDataTypes[] | null; 
+    // setComments: React.Dispatch<React.SetStateAction<CommentsDataTypes[] | null>>; 
+    comments: CommentWithAuthorDataTypes[] | null;
+  setComments: React.Dispatch<React.SetStateAction<CommentWithAuthorDataTypes[] | null>>;
     favorites: FavoritesDataTypes[] | null;
     setFavorites: React.Dispatch<React.SetStateAction<FavoritesDataTypes[] | null>>; 
     subtopics:SubtopicsDataTypes[] | null; 
@@ -72,11 +98,12 @@ export type FetchContextType = {
     setLoading: React.Dispatch<React.SetStateAction<boolean>>; 
     error: string | null;
     setError: React.Dispatch<React.SetStateAction<string | null>>; 
-    filteredPosts: PostDataTypes[] | null; 
-    setFilteredPosts: React.Dispatch<React.SetStateAction<PostDataTypes[] | null>>;
+    // filteredPosts: PostDataTypes[] | null; 
+    // setFilteredPosts: React.Dispatch<React.SetStateAction<PostDataTypes[] | null>>;
+    filteredPosts: PostWithAuthorAndSubtopicDataTypes[] | null; 
+    setFilteredPosts: React.Dispatch<React.SetStateAction<PostWithAuthorAndSubtopicDataTypes[] | null>>;
     getPosts: () => Promise<void>
     getComments: () => Promise<void>
-    // getSinglePost: () => Promise<void>
 
     
   };

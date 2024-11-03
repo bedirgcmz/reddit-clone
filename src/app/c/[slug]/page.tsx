@@ -4,36 +4,32 @@
 import { useEffect, useState } from "react";
 import { useFetchContext } from "@/context/FetchContext";
 import { useGeneralContext } from "@/context/GeneralContext";
-import { timeAgo } from "@/utils/helpers"; 
-import { TbPointFilled } from "react-icons/tb";
-import Link from "next/link";
 import supabase from "@/lib/supabaseClient";
-import { Post_SubtopicsDataTypes, SubtopicsDataTypes, TopicsDataTypes } from "@/utils/types";
-import InteractionBox from "@/components/InteractionBox";
+import {
+    PostWithAuthorAndSubtopicDataTypes,
+    Post_SubtopicsDataTypes,
+    SubtopicsDataTypes,
+    TopicsDataTypes,
+} from "@/utils/types";
 import PostCard from "@/components/PostCard";
-import CreateCommentInput from "@/components/CreateComment";
 
 const SubtopicPage = ({ params }: { params: { slug: string } }) => {
-  const [topics, setTopics] = useState<TopicsDataTypes[] | null>([]);
-    const [subtopicsParamSlug, setSubtopicsParamSlug] = useState(params.slug);
+    // const {topics} = useFetchContext()
+    const [topics, setTopics] = useState<TopicsDataTypes[] | null>([]);
     const [subtopic, setSubtopic] = useState<SubtopicsDataTypes | null>(null);
     const [postSubtopic, setPostSubtopic] = useState<Post_SubtopicsDataTypes[] | null>([]);
     const {
-        users,
         posts,
         loading,
         setLoading,
         error,
         setError,
-        filteredPosts, 
-        setFilteredPosts
+        filteredPosts,
+        setFilteredPosts,
     } = useFetchContext();
-    const {currentUser} = useGeneralContext()
+    const { currentUser } = useGeneralContext();
 
-    const slug = params.slug
-    useEffect(() =>{
-        setSubtopicsParamSlug(slug)
-    },[slug])
+    const slug = params.slug;
 
     useEffect(() => {
         const fetchData = async () => {
@@ -44,34 +40,60 @@ const SubtopicPage = ({ params }: { params: { slug: string } }) => {
                 setPostSubtopic([]);
                 setFilteredPosts([]);
 
-                // Fetch subtopic data
+                // Fetch subtopic data by slug
                 const { data: subtopicData, error: subtopicError } = await supabase
-                    .from('subtopics')
-                    .select('*')
-                    .eq('slug', subtopicsParamSlug)
+                    .from("subtopics")
+                    .select("*")
+                    .eq("slug", slug)
                     .maybeSingle();
 
                 if (subtopicError) throw subtopicError;
-                if (!subtopicData) throw new Error(`No subtopic found for slug: ${subtopicsParamSlug}`);
+                if (!subtopicData) throw new Error(`No subtopic found for slug: ${slug}`);
                 setSubtopic(subtopicData);
+                
 
-                // Fetch post_subtopics
+                // Fetch post_subtopics for the specific subtopic
                 const { data: postSubtopicData, error: postSubtopicError } = await supabase
-                    .from('post_subtopics')
-                    .select('*')
-                    .eq('subtopic_id', subtopicData.id);
+                    .from("post_subtopics")
+                    .select("post_id")
+                    .eq("subtopic_id", subtopicData.id);
 
                 if (postSubtopicError) throw postSubtopicError;
                 if (!postSubtopicData || postSubtopicData.length === 0) {
                     console.log(`No posts found for subtopic ID: ${subtopicData.id}`);
-                    return; // Early return if no posts
+                    return; 
                 }
-                setPostSubtopic(postSubtopicData);
-
-                // Get post IDs and filter posts
+                //ilgili subtopic'e ait postlarin id'sini getiriyoruz
+                setPostSubtopic(postSubtopicData as Post_SubtopicsDataTypes[]);
+                
+                // Get post IDs and fetch posts with author and subtopic-topic details
                 const postIds = postSubtopicData.map((ps) => ps.post_id);
-                const filteredPostsData = posts?.filter(post => postIds.includes(post.id)) || [];
-                setFilteredPosts(filteredPostsData); 
+                const { data: filteredPostsData, error: filteredPostsError } = await supabase
+                    .from('posts')
+                    .select(`
+                        *,
+                        author:users (
+                            id,
+                            username,
+                            image
+                        ),
+                        post_subtopics (
+                            subtopic_id,
+                            subtopic:subtopics (
+                                id,
+                                name,
+                                topic:topics (
+                                    id,
+                                    name
+                                )
+                            )
+                        )
+                    `)
+                    .in('id', postIds);
+
+
+                if (filteredPostsError) throw filteredPostsError;
+                setFilteredPosts(filteredPostsData as PostWithAuthorAndSubtopicDataTypes[]);
 
             } catch (err) {
                 setError((err as Error).message);
@@ -80,53 +102,52 @@ const SubtopicPage = ({ params }: { params: { slug: string } }) => {
             }
         };
 
-        if (subtopicsParamSlug && posts) {
+        if (slug && posts) {
             fetchData();
         }
-    }, [subtopicsParamSlug, posts]);
+    }, [slug, posts]);
 
     useEffect(() => {
-        const fetchPosts = async () => {
-          setLoading(true);
-          try {
-            // Tüm topics çekiyoruz
-            const { data: topicsData, error: topicsError } = await supabase
-              .from('topics')
-              .select('*');
-      
-            if (topicsError) throw topicsError;
-            if (!topicsData) throw new Error(`No topics found`);
-            setTopics(topicsData); 
-    
-          } catch (err) {
-            setError((err as Error).message);
-          } finally {
-            setLoading(false);
-          }
+        const fetchTopics = async () => {
+            setLoading(true);
+            try {
+                // Fetch all topics
+                const { data: topicsData, error: topicsError } = await supabase
+                    .from("topics")
+                    .select("*");
+
+                if (topicsError) throw topicsError;
+                setTopics(topicsData);
+            } catch (err) {
+                setError((err as Error).message);
+            } finally {
+                setLoading(false);
+            }
         };
-      
-        fetchPosts();
-      }, [slug]);
+
+        fetchTopics();
+    }, []);
 
     if (loading) return <p>Loading...</p>;
-    if (error) return <p>Error: {error}</p>;
+    
 
     return (
-            <div className="">
-                <h1 className="text-2xl md:text-4xl">{subtopic?.name}</h1>
-                <p className="text-blue-200 text-sm mb-4">{topics?.find((tp) => tp.id == subtopic?.topic_id)?.name}</p>
-                {filteredPosts && filteredPosts.length > 0 ? (
-                    filteredPosts.map((post) => (
-                        <div key={post.id}>
+        <div className="">
+            <h1 className="text-2xl md:text-4xl">{subtopic?.name}</h1>
+            <p className="text-blue-200 text-sm mb-4">
+                {topics?.find((tp) => tp.id === subtopic?.topic_id)?.name}
+            </p>
+            {filteredPosts && filteredPosts.length > 0 ? (
+                filteredPosts.map((post) => (
+                    <div key={post.id}>
                         <PostCard post={post} />
-                        </div>
-                        ))
-                ) : (
-                    <p>No posts found for this subtopic......</p>
-                )}
-            </div>
+                    </div>
+                ))
+            ) : (
+                <p>No posts found for this subtopic...</p>
+            )}
+        </div>
     );
-    
 };
 
 export default SubtopicPage;

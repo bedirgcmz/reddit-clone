@@ -34,10 +34,20 @@ const SigninModal: React.FC<SigninModalProps> = ({ onClose, onOpenSignup }) => {
       }
 
       if (data.user) {
-        const foundUser = users?.find((user) => user.email === email);
-        if (foundUser) {
-          setCurrentUser(foundUser);
-          setLocalStorage('userRedditClone', foundUser)
+          // Eger user giris yapabilirse, giriş yapan kullanıcınin diger bilgilerini users tablosundan getirmek için yeni bir sorgu yapıyoruz.
+          const { data: userData, error: userError } = await supabase
+          .from('users')
+          .select('*')
+          .eq('email', email)
+          .single();
+
+        if (userError) {
+          throw new Error(userError.message);
+        }
+        //gelen users bilgilerini kullanmak
+        if (userData) {
+          setCurrentUser(userData);
+          setLocalStorage('userRedditClone', userData)
           onClose(); 
         } else {
           setError("User not found in the database.");

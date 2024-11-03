@@ -24,7 +24,7 @@ const InteractionBox: React.FC<InteractionBoxProps>  = ({singlePost}) => {
   type DeleteFuncProps = {
     pPostId: string
   }
-// Asenkron bir fonksiyon olarak deletePost'u tanımlayın
+// Asenkron bir fonksiyon olarak deletePost'u tanımlayalim
 const deletePost = async ({ pPostId }: DeleteFuncProps) => {
   const isConfirmed = await confirmAlert({
     title: "Are you sure?",
@@ -64,22 +64,6 @@ const handleComment = () => {
   }
 }
 
-const addPostToFavoritsList = async (pPostId : string, pUserId: string | undefined) => {
-  const { data } = await supabase
-  .from("favorites")
-  .insert([
-    {post_id: pPostId, user_id: pUserId}
-  ])
-}
-const deletePostFromFavoritsList = async (pPostId : string, pUserId: string | undefined) => {
-  const { data } = await supabase
-  .from("favorites")
-  .delete()
-  .eq("user_id", pUserId)
-  .eq("post_id", pPostId)
-}
-
-
   return (
     <div className=" text-gray-600 py-4 flex justify-between sm:justify-start items-center space-x-4">
       
@@ -106,16 +90,13 @@ const deletePostFromFavoritsList = async (pPostId : string, pUserId: string | un
               }
               </span>
               {currentUser  && (
-            <Link href={`/posts/${singlePost.slug}`} passHref className="flex w-full h-full absolute top-0 left-0 items-center justify-center gap-1">
-            </Link>
+            <Link href={`/posts/${singlePost.slug}`} passHref className="flex w-full h-full absolute top-0 left-0 items-center justify-center gap-1" />
     )}
           </span>
       </div>
 
       {/* Favorilere Ekle */}
       <div className="flex items-center space-x-2 bg-gray-200 rounded-full px-[6px] sm:px-[12px] py-1 sm:py-2 h-[34px] sm:h-[40px] text-sm sm:text-xl">
-        {/* <FaHeart className="cursor-pointer text-orange" onClick={() => deletePostFromFavoritsList(singlePost.id, currentUser?.id)}/>
-        <FaRegHeart className="cursor-pointer" onClick={() => addPostToFavoritsList(singlePost.id, currentUser?.id)}/> */}
         <FavoriteButton singlePostId={singlePost.id} currentUserId={currentUser?.id}/>
       </div>
 

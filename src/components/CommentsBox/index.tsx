@@ -1,7 +1,7 @@
 import { useFetchContext } from "@/context/FetchContext";
 import { useGeneralContext } from "@/context/GeneralContext";
 import  { timeAgo, mySwalAlert, confirmAlert } from "@/utils/helpers";
-import { CommentsDataTypes } from "@/utils/types";
+import { CommentWithAuthorDataTypes } from "@/utils/types";
 import React from "react";
 import { TbPointFilled } from "react-icons/tb";
 import { AiOutlineEdit } from "react-icons/ai";
@@ -10,9 +10,14 @@ import UpdateCommentModal from "@/components/UpdateCommentModal";
 import supabase from "@/lib/supabaseClient";
 import ReplyInput from "@/components/ReplyInput";
 
+// type CommentsBoxProps = {
+//   commentsProps: CommentsDataTypes[] | undefined;
+//   parentCommentId?: string | null;  // Recursive yapıyı desteklemek için parentCommentId eklendi
+// };
+
 type CommentsBoxProps = {
-  commentsProps: CommentsDataTypes[] | undefined;
-  parentCommentId?: string | null;  // Recursive yapıyı desteklemek için parentCommentId eklendi
+  commentsProps: CommentWithAuthorDataTypes[] | undefined;
+  parentCommentId?: string | null;
 };
 
 const CommentsBox: React.FC<CommentsBoxProps> = ({ commentsProps, parentCommentId = null }) => {
@@ -110,11 +115,11 @@ const CommentsBox: React.FC<CommentsBoxProps> = ({ commentsProps, parentCommentI
               <span className="flex items-center">
                   <img
                     className="rounded-full me-2 h-[20px] w-[20px]"
-                    src={users?.find((e) => e.id == comment.user_id)?.image}
+                    src={comment.author.image}
                     alt="user"
                   />
                   <span className="text-sm">
-                    @{users?.find((e) => e.id == comment.user_id)?.username}
+                    @{comment.author.username}
                   </span>
               </span>
               <span className="flex items-center">

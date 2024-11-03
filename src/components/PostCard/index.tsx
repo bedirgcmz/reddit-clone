@@ -1,5 +1,5 @@
 
-import { PostDataTypes } from '@/utils/types';
+import { PostDataTypes, PostWithAuthorDataTypes } from '@/utils/types';
 import React, { useState } from 'react';
 import { TbPointFilled } from 'react-icons/tb';
 import InteractionBox from '../InteractionBox';
@@ -8,13 +8,13 @@ import { timeAgo } from '@/utils/helpers';
 import { useFetchContext } from '@/context/FetchContext';
 import { useGeneralContext } from '@/context/GeneralContext';
 import { FaEdit } from 'react-icons/fa';
-import UpdatePostModal from '../UpdatePostModal'; // Modal bileşenini içe aktar
+import UpdatePostModal from '../UpdatePostModal'; 
 import supabase from '@/lib/supabaseClient';
 import { toast } from 'sonner'
 
 
 type PostCardProps = {
-    post: PostDataTypes;
+    post: PostWithAuthorDataTypes;
 };
 
 const PostCard: React.FC<PostCardProps> = ({ post }) => {
@@ -59,7 +59,7 @@ const PostCard: React.FC<PostCardProps> = ({ post }) => {
         .eq('id', postId); 
 
       if (postError) throw postError;
-      
+
       toast.success('Post has been updated')
       getPosts();
     } catch (error) {
@@ -71,9 +71,11 @@ const PostCard: React.FC<PostCardProps> = ({ post }) => {
     return (
         <div key={post.id} className="hover:bg-gray-100 rounded-lg p-4 pb-0 w-full lg:w-[700px]">
             <h5 className='flex justify-start items-center mb-[14px]'>
-                <img className='rounded-full me-2 h-[20px] w-[20px]' src={users?.find((user) => user.id == post.user_id)?.image} alt="user" />
+              {/* users?.find((user) => user.id == post.user_id)?.image */}
+                <img className='rounded-full me-2 h-[20px] w-[20px]' src={post.author?.image} alt="user" />
                 <span>
-                    r/{users?.find((user) => user.id == post.user_id)?.username}
+                    {/* r/{users?.find((user) => user.id == post.user_id)?.username} */}
+                    r/{post.author?.username}
                 </span>
                 <TbPointFilled className='mx-2 text-[8px] text-gray-600'></TbPointFilled>
                 <span className='text-xs text-gray-500'>

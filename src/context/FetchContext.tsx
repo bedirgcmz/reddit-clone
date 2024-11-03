@@ -2,16 +2,16 @@
 "use client";
 import React, { createContext, useState, useEffect, useContext, ReactNode } from 'react';
 import supabase from '@/lib/supabaseClient';
-import { PostDataTypes, FetchContextType, CommentsDataTypes, UsersDataTypes, FavoritesDataTypes, SubtopicsDataTypes, TopicsDataTypes } from '@/utils/types';
+import { PostDataTypes, FetchContextType, UsersDataTypes, FavoritesDataTypes, SubtopicsDataTypes, TopicsDataTypes, PostWithAuthorDataTypes, CommentWithAuthorDataTypes, PostWithAuthorAndSubtopicDataTypes } from '@/utils/types';
 
 // Başlangıç değerleri
 const FetchContext = createContext<FetchContextType | undefined>(undefined);
 
 // Provider bileşeni oluşturma
 export const FetchProvider = ({ children }: { children: ReactNode }) => {
-  const [singlePost, setSinglePost] = useState<PostDataTypes | null>(null);
+  const [singlePost, setSinglePost] = useState<PostWithAuthorDataTypes | null>(null);
   const [posts, setPosts] = useState<PostDataTypes[] | null>([]);
-  const [comments, setComments] = useState<CommentsDataTypes[] | null>([]);
+  const [comments, setComments] = useState<CommentWithAuthorDataTypes[] | null>([]);
   const [favorites, setFavorites] = useState<FavoritesDataTypes[] | null>([]);
   const [subtopics, setSubtopics] = useState<SubtopicsDataTypes[] | null>([]);
   const [topics, setTopics] = useState<TopicsDataTypes[] | null>([]);
@@ -19,27 +19,31 @@ export const FetchProvider = ({ children }: { children: ReactNode }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [postParamsSlug, setPostParamsSlug] = useState<string | null>(null);
-  const [filteredPosts, setFilteredPosts] = useState<PostDataTypes[] | null>([]);
-
+  const [filteredPosts, setFilteredPosts] = useState<PostWithAuthorAndSubtopicDataTypes[] | null>([]);
 
   const getComments = async () => {
-      try {
-         // Tum Comments verilerini alalim
-         const { data: commentsData, error: commentsError } = await supabase
-         .from('comments')
-         .select('*') 
-         .order('created_at', {ascending: false})
-         
-         if (commentsError) throw commentsError;
-         if (!commentsData) throw new Error(`No comment found`);
-         setComments(commentsData); 
-        
-     } catch (err) {
-        setError((err as Error).message);
-    } finally {
-      setLoading(false);
+    try {
+      const { data, error } = await supabase
+        .from("comments")
+        .select(`
+          id, content, user_id, post_id, parent_id, created_at, updated_at,
+          users: user_id (username, image)
+        `);
+  
+      if (error) throw error;
+  
+      // Format comments to include author data
+      const formattedComments = data.map(comment => ({
+        ...comment,
+        author: comment.users,
+      }));
+  
+      setComments(formattedComments as unknown as CommentWithAuthorDataTypes[]);
+    } catch (err) {
+      setError((err as Error).message);
     }
-  }
+  };
+  
   const getPosts = async () => {
     try {
           // Tüm posts çekiyoruz
@@ -57,21 +61,7 @@ export const FetchProvider = ({ children }: { children: ReactNode }) => {
      setLoading(false);
    }
   }
-  const getUsers = async () => {
-    try {
-        // Tum Users verilerini alalim
-        const { data: usersData, error: usersError } = await supabase
-        .from('users')
-        .select('*') 
-        if (usersError) throw usersError;
-        if (!usersData) throw new Error(`No users found`);
-        setUsers(usersData); 
-    } catch (err) {
-       setError((err as Error).message);
-   } finally {
-     setLoading(false);
-   }
-  }
+ 
   const getTopics = async () => {
     try {
         // Tum Topics verilerini alalim
@@ -88,7 +78,7 @@ export const FetchProvider = ({ children }: { children: ReactNode }) => {
      setLoading(false);
    }
   }
-  
+
   const getSubtopics = async () => {
     try {
          // Tum Subtopics verilerini alalim
@@ -108,8 +98,6 @@ export const FetchProvider = ({ children }: { children: ReactNode }) => {
   
   useEffect(() => {
     setLoading(true);
-    getUsers()
-    getPosts()
     getComments()
     getSubtopics() 
     getTopics()
@@ -120,7 +108,6 @@ export const FetchProvider = ({ children }: { children: ReactNode }) => {
     <FetchContext.Provider value={{
       singlePost,
       setSinglePost,
-      // getSinglePost,
       postParamsSlug,
       setPostParamsSlug,
       comments, 
