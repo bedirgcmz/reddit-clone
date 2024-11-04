@@ -1,8 +1,9 @@
+"use client"
 import { useFetchContext } from "@/context/FetchContext";
 import { useGeneralContext } from "@/context/GeneralContext";
 import  { timeAgo, mySwalAlert, confirmAlert } from "@/utils/helpers";
 import { CommentWithAuthorDataTypes } from "@/utils/types";
-import React from "react";
+import React, { useEffect } from "react";
 import { TbPointFilled } from "react-icons/tb";
 import { AiOutlineEdit } from "react-icons/ai";
 import { MdDelete, MdDeleteForever } from "react-icons/md";
@@ -10,16 +11,14 @@ import UpdateCommentModal from "@/components/UpdateCommentModal";
 import supabase from "@/lib/supabaseClient";
 import ReplyInput from "@/components/ReplyInput";
 
-// type CommentsBoxProps = {
-//   commentsProps: CommentsDataTypes[] | undefined;
-//   parentCommentId?: string | null;  // Recursive yapıyı desteklemek için parentCommentId eklendi
-// };
+
 
 type CommentsBoxProps = {
-  commentsProps: CommentWithAuthorDataTypes[] | undefined;
+  commentsProps: CommentWithAuthorDataTypes[] | undefined; // post/[slug] altinda ilgili posta ait yorumler olarak geliyor
   parentCommentId?: string | null;
 };
 
+//Bu componenti post/[slug] sayfasinda kullaniyorum
 const CommentsBox: React.FC<CommentsBoxProps> = ({ commentsProps, parentCommentId = null }) => {
   const { users, comments, posts, setError, getComments } = useFetchContext();
   const {
@@ -29,7 +28,7 @@ const CommentsBox: React.FC<CommentsBoxProps> = ({ commentsProps, parentCommentI
     updateCommentId,
     setUpdateCommentId,
   } = useGeneralContext();
-
+  
   const handleEditClick = (commentId: string) => {
     setUpdateCommentId(commentId); 
     setUpdateCommentModalOpen(true); 
@@ -65,7 +64,6 @@ const CommentsBox: React.FC<CommentsBoxProps> = ({ commentsProps, parentCommentI
 
       }
   };
-
 
   const deletePostByOwnPost = async (
     pCommentsId: string
@@ -104,6 +102,11 @@ const CommentsBox: React.FC<CommentsBoxProps> = ({ commentsProps, parentCommentI
     getComments();
   };
 
+  // useEffect(() => {
+  //   getComments()
+  // }, [commentsProps]);
+
+
   return (
     <>
       <ul className={`comments sm:ps-1 md:ps-2 pb-0 pt-2 w-full  scr ${parentCommentId ? 'ml-1 sm:ml-2 md:ml-4' : ''}`}>
@@ -115,11 +118,11 @@ const CommentsBox: React.FC<CommentsBoxProps> = ({ commentsProps, parentCommentI
               <span className="flex items-center">
                   <img
                     className="rounded-full me-2 h-[20px] w-[20px]"
-                    src={comment.author.image}
+                    src={comment.author?.image || "/images/userDefaultImage.png"}
                     alt="user"
                   />
                   <span className="text-sm">
-                    @{comment.author.username}
+                    @{comment.author?.username || "Unknown"}
                   </span>
               </span>
               <span className="flex items-center">

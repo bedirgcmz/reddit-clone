@@ -1,23 +1,26 @@
+
+
 import { useState } from 'react';
 import { IoMdText, IoMdClose, IoMdCheckmark } from 'react-icons/io';
 import { useFetchContext } from '@/context/FetchContext';
 import { useGeneralContext } from '@/context/GeneralContext';
 import supabase from '@/lib/supabaseClient';
-import { PostDataTypes } from '@/utils/types';
+import { CommentWithAuthorDataTypes, PostDataTypes } from '@/utils/types';
 
 type InteractionBoxProps = {
     singlePost: PostDataTypes;
   };
 
-const CreateCommentInput:React.FC<InteractionBoxProps> = ({ singlePost }) => {
+const CreateCommentInput: React.FC<InteractionBoxProps> = ({ singlePost }) => {
   const { currentUser } = useGeneralContext();
-  const { setComments } = useFetchContext();
+  const { setComments, getComments } = useFetchContext();
   const [comment, setComment] = useState('');
   const [isFocused, setIsFocused] = useState(false);
 
   const handleCommit = async () => {
     if (!comment.trim()) return;
 
+    // Insert the comment into the 'comments' table
     const { error } = await supabase.from('comments').insert([
       {
         content: comment,
@@ -26,22 +29,40 @@ const CreateCommentInput:React.FC<InteractionBoxProps> = ({ singlePost }) => {
       },
     ]);
 
-     // Tum Comments verilerini alalim
-     const { data: commentsData, error: commentsError } = await supabase
-     .from('comments')
-     .select('*') 
-     .order('created_at', {ascending: false})
-     
-     if (commentsError) throw commentsError;
-     if (!commentsData) throw new Error(`No comment found`);
-     setComments(commentsData); 
-
     if (error) {
       console.error('Comment error:', error.message);
-    } else {
-      setComment('');
-      setIsFocused(false);
+      return;
     }
+
+    // Fetch comments with user data (username and image)
+    const { data: commentsData, error: commentsError } = await supabase
+      .from('comments')
+      .select(`
+      id, content, user_id, post_id, parent_id, created_at, updated_at,
+        users: user_id (username, image)
+      `)
+      .order('created_at', { ascending: false });
+
+    if (commentsError) {
+      console.error('Comments fetch error:', commentsError.message);
+      return;
+    }
+
+    if (commentsData) {
+      // Format comments to include author data
+      const formattedComments = commentsData.map((comment) => ({
+        ...comment,
+        author: comment.users,
+      }));
+
+      setComments(formattedComments as unknown as CommentWithAuthorDataTypes[]);
+    }
+
+    // Clear the input and reset focus
+    setComment('');
+    setIsFocused(false);
+   
+
   };
 
   return (
@@ -74,7 +95,6 @@ const CreateCommentInput:React.FC<InteractionBoxProps> = ({ singlePost }) => {
           </div>
         </div>
       )}
-     
     </div>
   );
 };
