@@ -3,7 +3,7 @@ import { useFetchContext } from "@/context/FetchContext";
 import { useGeneralContext } from "@/context/GeneralContext";
 import  { timeAgo, mySwalAlert, confirmAlert } from "@/utils/helpers";
 import { CommentWithAuthorDataTypes } from "@/utils/types";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { TbPointFilled } from "react-icons/tb";
 import { AiOutlineEdit } from "react-icons/ai";
 import { MdDelete, MdDeleteForever } from "react-icons/md";
@@ -20,7 +20,7 @@ type CommentsBoxProps = {
 
 //Bu componenti post/[slug] sayfasinda kullaniyorum
 const CommentsBox: React.FC<CommentsBoxProps> = ({ commentsProps, parentCommentId = null }) => {
-  const { users, comments, posts, setError, getComments } = useFetchContext();
+  const { posts, setError, getComments } = useFetchContext();
   const {
     currentUser,
     isUpdateCommentModalOpen,
@@ -28,6 +28,7 @@ const CommentsBox: React.FC<CommentsBoxProps> = ({ commentsProps, parentCommentI
     updateCommentId,
     setUpdateCommentId,
   } = useGeneralContext();
+  const [isUserOwnThisPost, setIsUserOwnThisPost] = useState<boolean[]>([]);
   
   const handleEditClick = (commentId: string) => {
     setUpdateCommentId(commentId); 
@@ -66,28 +67,23 @@ const CommentsBox: React.FC<CommentsBoxProps> = ({ commentsProps, parentCommentI
   };
 
   const deletePostByOwnPost = async (
-    pCommentsId: string
+    pCommentsId: string, pPostId: string
   ) => {
-    const postId = comments?.find((cm) => cm.id == pCommentsId)?.post_id;
-    const targetUserId = posts?.find((pt) => pt.id == postId)?.user_id;
     const isConfirmed = await confirmAlert({
         title: "Are you sure?",
         text: "Do you really want to delete this comment?",
       });
     
       if (isConfirmed) {
-          if (currentUser?.id == targetUserId) {
-              console.log("Calisti");
-            const { error: deleteError } = await supabase
-              .from("comments")
-              .delete()
-              .eq("id", pCommentsId);
-              mySwalAlert({
-                  icon: "success",
-                  title: "successful!",
-                  text: "This comment was deleted.",
-                });
-      
+        const { error: deleteError } = await supabase
+          .from("comments")
+          .delete()
+          .eq("id", pCommentsId);
+          mySwalAlert({
+              icon: "success",
+              title: "successful!",
+              text: "This comment was deleted.",
+            });
             if (deleteError) {
               console.error("Error deleting post:", deleteError.message);
               mySwalAlert({
@@ -96,23 +92,42 @@ const CommentsBox: React.FC<CommentsBoxProps> = ({ commentsProps, parentCommentI
                   text: "This comment was not deleted.",
                 });
               return;
-            }
-          }  
+            } 
       } 
     getComments();
   };
 
-  // useEffect(() => {
-  //   getComments()
-  // }, [commentsProps]);
+  useEffect(() => {
+    // Her comment'in post_id'sine göre sahiplik durumunu kontrol et. Post sahibi baskalarinin yorumunu silebilsin diye
+    const fetchOwnership = async () => {
+      const ownershipResults = await Promise.all(
+        (commentsProps || []).map(async (comment) => {
+          const { data } = await supabase
+            .from("posts")
+            .select("user_id")
+            .eq("id", comment.post_id)
+            .single();
 
+          return data ? currentUser?.id === data.user_id : false;
+        })
+      );
+      setIsUserOwnThisPost(ownershipResults);
+    };
+
+    fetchOwnership();
+  }, [commentsProps, currentUser]);
+
+  console.log(posts);
+  
 
   return (
     <>
       <ul className={`comments sm:ps-1 md:ps-2 pb-0 pt-2 w-full  scr ${parentCommentId ? 'ml-1 sm:ml-2 md:ml-4' : ''}`}>
         {commentsProps
-          ?.filter((comment) => comment.parent_id === parentCommentId) 
-          ?.map((comment) => (
+          ?.filter((commentone) =>
+            commentone.parent_id === parentCommentId
+          ) 
+          ?.map((comment, index) => (
           <li key={comment.id} className="p-2 md:ps-4 pt-4 relative flex flex-col max-w-[600px]">
             <span className="absolute top-0 left-0 flex items-start sm:items-center  flex-col sm:flex-row">
               <span className="flex items-center">
@@ -130,25 +145,26 @@ const CommentsBox: React.FC<CommentsBoxProps> = ({ commentsProps, parentCommentI
                   <span className="text-xs text-gray-500  me-2">
                     {timeAgo(comment.created_at)}
                   </span>
-                  {
-                      comment.updated_at && <span className='text-xs text-gray-400 mx-2 flex'>(edited<span className='hidden lg:flex'>: {timeAgo(comment.updated_at)}</span>)</span>
-                    }
+                  {comment.updated_at && <span className='text-xs text-gray-400 mx-2 flex'>(edited<span className='hidden lg:flex'>: {timeAgo(comment.updated_at)}</span>)</span>}
                   {currentUser?.id === comment.user_id && (
                     <AiOutlineEdit
                       className="mx-2 text-orange-200 cursor-pointer"
                       onClick={() => handleEditClick(comment.id)}
                     />
                   )}
-                  {!(currentUser?.id === posts?.find((pt) => pt.id == comments?.find((cm) => cm.id == comment.id)?.post_id)?.user_id) && currentUser?.id === comment.user_id && (
+                  {/* Kullanici kendi yorumunu bu icon ile silebilir */}
+                  {currentUser?.id === comment.user_id && (
+                  // {!(currentUser?.id === posts?.find((pt) => pt.id == comment.post_id)?.user_id) && currentUser?.id === comment.user_id && (
                     <MdDeleteForever
                       className="me-2 text-orange-200 cursor-pointer aa"
                       onClick={() => deleteComment(comment.id)}
                     />
                   )}
-                    {currentUser?.id === posts?.find((pt) => pt.id == comments?.find((cm) => cm.id == comment.id)?.post_id)?.user_id && (
+                  {/* Kullanici kendi postune gelen baskalarinin yorumunu bu icon ile silebilir */}
+                    {(isUserOwnThisPost[index] && currentUser?.id !== comment.user_id ) && (
                     <MdDeleteForever
-                      className="me-2 text-orange-200 cursor-pointer"
-                      onClick={() => deletePostByOwnPost(comment.id)}
+                      className="me-2 text-orange-200 cursor-pointer ccc"
+                      onClick={() => deletePostByOwnPost(comment.id, comment.post_id)}
                     />
                   )}
               </span>
