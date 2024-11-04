@@ -20,7 +20,7 @@ type CommentsBoxProps = {
 
 //Bu componenti post/[slug] sayfasinda kullaniyorum
 const CommentsBox: React.FC<CommentsBoxProps> = ({ commentsProps, parentCommentId = null }) => {
-  const { posts, setError, getComments } = useFetchContext();
+  const { setError, getComments } = useFetchContext();
   const {
     currentUser,
     isUpdateCommentModalOpen,
@@ -117,7 +117,7 @@ const CommentsBox: React.FC<CommentsBoxProps> = ({ commentsProps, parentCommentI
     fetchOwnership();
   }, [commentsProps, currentUser]);
 
-  console.log(posts);
+ 
   
 
   return (
