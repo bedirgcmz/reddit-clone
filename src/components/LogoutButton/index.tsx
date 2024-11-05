@@ -8,15 +8,17 @@ const LogoutButton: React.FC = () => {
   const router = useRouter();
 
   const handleLogout = async () => {
-    router.push("/");
-    const { error } = await supabase.auth.signOut(); 
+    router.push("/"); 
+    setTimeout(async () => {
+      const { error } = await supabase.auth.signOut();
 
-    if (error) {
-      console.error("Logout error:", error);
-    } else {
-      setCurrentUser(null); 
-      localStorage.removeItem("userRedditClone");
-    }
+      if (error) {
+        console.error("Logout error:", error);
+      } else {
+        setCurrentUser(null);
+        localStorage.removeItem("userRedditClone");
+      }
+    }, 700); 
   };
 
   return (
