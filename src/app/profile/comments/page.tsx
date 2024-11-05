@@ -19,6 +19,8 @@ const UserComments: React.FC = () => {
   const { currentUser, isUpdateCommentModalOpen, setUpdateCommentModalOpen, updateCommentId, setUpdateCommentId } = useGeneralContext(); 
   const [userComments, setUserComments] = useState<CommentWithAuthorDataTypes[]>([]); // Updated type
 
+  if (!currentUser) return <p>Please log in to see your comments.</p>; 
+
   const handleEditClick = (commentId: string) => {
     setUpdateCommentId(commentId); 
     setUpdateCommentModalOpen(true); 
@@ -91,7 +93,6 @@ const UserComments: React.FC = () => {
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>{error}</p>;
-  if (!currentUser) return <p>Please log in to see your comments.</p>; 
   if (!userComments || userComments.length === 0) return <p className='text-orange-300'>You haven't commented yet</p>; 
 
   return (

@@ -62,7 +62,7 @@ const UserPosts = () => {
   return (
     <div className='flex flex-col items-center mb-4'>
       {!userPosts || userPosts.length === 0 ? (
-        <p>You have no posts yet.</p>
+        <p className='text-orange-300'>You have no posts yet.</p>
       ) : (
         userPosts.map((post) => (
           <PostCard key={post.id} post={post} />

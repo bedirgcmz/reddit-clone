@@ -180,6 +180,9 @@ const UserAccount = () => {
   const [newImageFile, setNewImageFile] = useState<File | null>(null);
   const [editField, setEditField] = useState<string | null>(null);
 
+  if (!currentUser) return <p>Please log in to see your account.</p>;
+
+
   // Kullanıcı verilerini yükle
   useEffect(() => {
     if (currentUser) {
@@ -250,7 +253,6 @@ const UserAccount = () => {
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>{error}</p>;
-  if (!currentUser) return <p>Please log in to see your account.</p>;
 
 
   return (

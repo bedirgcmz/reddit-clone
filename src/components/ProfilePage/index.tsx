@@ -11,6 +11,8 @@ const ProfilePage = () => {
   const { currentUser } = useGeneralContext();
   const { posts, comments, setError, setLoading } = useFetchContext();
   const [favorites, setfavorites] = useState<FavoritesDataTypes[] | null>([])
+  const [commentsCount, setCommentsCount] = useState<number | null>(0)
+  const [postsCount, setPostsCount] = useState<number | null>(0)
 
   const getFavorites = async () => {
     try {
@@ -31,28 +33,61 @@ const ProfilePage = () => {
   }
 }
 
-  useEffect(() => {
-    if (currentUser && !currentUser.image) {
-      setTimeout(() => {
-        Swal.fire({
-          title: 'Complete Your Profile',
-          text: 'Please update your profile with the missing information.',
-          icon: 'info',
-          confirmButtonText: 'OK',
-        });
-      }, 2000);
-    }
-    getFavorites()
-  }, [currentUser]);
+  // useEffect(() => {
+  //   if (currentUser && !currentUser.image) {
+  //     setTimeout(() => {
+  //       Swal.fire({
+  //         title: 'Complete Your Profile',
+  //         text: 'Please update your profile with the missing information.',
+  //         icon: 'info',
+  //         confirmButtonText: 'OK',
+  //       });
+  //     }, 2000);
+  //   }
+  //   getFavorites()
+  // }, [currentUser]);
 
   if (!currentUser) {
     return <div className='text-orange text-xl'>Please log in to view this page.</div>;
   }
 
+ // Fetch comments count
+ const fetchCommentsCount = async () => {
+  const { count, error } = await supabase
+    .from("comments")
+    .select("*", { count: "exact", head: true })
+    .eq("user_id", currentUser?.id);
 
+  if (error) {
+    console.error("Error fetching comments count:", error.message);
+  } else {
+    setCommentsCount(count || 0);
+  }
+};
 
-  const postCount = posts?.filter(post => post.user_id === currentUser.id).length || 0;
-  const commentCount = comments?.filter(comment => comment.user_id === currentUser.id).length || 0;
+// Fetch posts count
+const fetchPostsCount = async () => {
+  const { count, error } = await supabase
+    .from("posts")
+    .select("*", { count: "exact", head: true })
+    .eq("user_id", currentUser?.id);
+
+  if (error) {
+    console.error("Error fetching posts count:", error.message);
+  } else {
+    setPostsCount(count || 0);
+  }
+};
+
+useEffect(() => {
+    if (currentUser?.id) {
+      fetchCommentsCount();
+      fetchPostsCount();
+      getFavorites()
+    }
+  
+}, [currentUser]);
+
   const favoriteCount = favorites?.filter(fav => fav.user_id === currentUser.id).length || 0;
   
 
@@ -83,11 +118,11 @@ const ProfilePage = () => {
       <div className="mt-16 w-full max-w-md">
         <div className="grid grid-cols-3 text-center">
           <div>
-            <h3 className="text-xl font-bold">{postCount}</h3>
+            <h3 className="text-xl font-bold">{postsCount}</h3>
             <p>Posts</p>
           </div>
           <div>
-            <h3 className="text-xl font-bold">{commentCount}</h3>
+            <h3 className="text-xl font-bold">{commentsCount}</h3>
             <p>Comments</p>
           </div>
           <div>

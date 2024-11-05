@@ -1,11 +1,14 @@
 import React from "react";
 import { useGeneralContext } from "@/context/GeneralContext";
 import supabase from "@/lib/supabaseClient"; 
+import { useRouter } from "next/navigation";
 
 const LogoutButton: React.FC = () => {
   const { setCurrentUser } = useGeneralContext(); 
+  const router = useRouter();
 
   const handleLogout = async () => {
+    router.push("/");
     const { error } = await supabase.auth.signOut(); 
 
     if (error) {
