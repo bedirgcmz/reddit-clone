@@ -17,7 +17,7 @@ export default function ProfileNavbar() {
   return (
     <nav className="flex justify-center items-center gap-2 border-b pb-2 mr-2">
       {links.map((link) => (
-        <Link legacyBehavior key={link.path} href={link.path}>
+        <Link legacyBehavior key={link.path} href={link.path} prefetch={true}>
           <a
             onClick={() => setActiveLink(link.path)}
             className={`py-2 px-2 sm:px-4 text-sm font-medium transition-colors duration-200 hover:text-gray-600 hover:bg-gray-100

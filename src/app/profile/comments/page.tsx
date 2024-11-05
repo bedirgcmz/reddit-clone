@@ -20,7 +20,6 @@ const UserComments: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-
   const handleEditClick = (commentId: string) => {
     setUpdateCommentId(commentId); 
     setUpdateCommentModalOpen(true); 

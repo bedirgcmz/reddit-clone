@@ -32,7 +32,7 @@ export default function AccordionComponent({setIsSidebarOpen}: AccordionComponen
                <Accordion.Body >
                   <ul className="my-2">
                     {subtopics?.filter((e) => e.topic_id === item.id).map((subtopic) => (
-                      <Link href={`/c/${subtopic.slug}` } key={subtopic.id} >
+                      <Link href={`/c/${subtopic.slug}` } key={subtopic.id} prefetch={true}>
                           <li  className="py-1" onClick={() => setIsSidebarOpen(false)}>{subtopic.name}</li>
                       </Link>
                     ))}
