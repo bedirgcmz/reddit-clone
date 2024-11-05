@@ -37,8 +37,7 @@ const PostCard: React.FC<PostCardProps> = ({ post }) => {
         const { data, error: uploadError } = await supabase.storage
           .from("post-images")
           .upload(fileName, updatedData.image);
-        console.log("calisti 1");
-        
+
         if (uploadError) throw uploadError;
 
         // Public URL'yi al
@@ -59,11 +58,8 @@ const PostCard: React.FC<PostCardProps> = ({ post }) => {
         .select("*");
 
         if (postError) {
-          console.error("Post update error:", postError);
           throw postError;
-        } else {
-          console.log("Post updated successfully:", postData);
-        }
+        } 
         
       toast.success('Post has been updated')
       getPosts();
