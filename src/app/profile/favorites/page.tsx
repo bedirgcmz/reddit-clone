@@ -26,7 +26,9 @@ const UserFavorites = () => {
       const { data: favoritePosts, error: favoritesError } = await supabase
         .from('favorites')
         .select('post_id')
-        .eq('user_id', currentUser?.id);
+        .eq('user_id', currentUser?.id)
+        .order('created_at', {ascending: false});
+
 
       if (favoritesError) throw favoritesError;
 

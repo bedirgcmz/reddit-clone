@@ -37,7 +37,9 @@ const UserComments: React.FC = () => {
         const { error: errorComment } = await supabase
           .from("comments")
           .delete()
-          .eq("id", commentId);
+          .eq("id", commentId)
+          .order('created_at', {ascending: false});
+
         if (errorComment) throw errorComment;
         
         mySwalAlert({
