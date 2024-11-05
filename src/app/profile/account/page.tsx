@@ -173,14 +173,15 @@ import { setLocalStorage } from "@/utils/helpers";
 
 const UserAccount = () => {
   const { currentUser, setCurrentUser } = useGeneralContext();
-  const { loading, error, setError } = useFetchContext();
+  // const { loading, error, setError } = useFetchContext();
   const [fullname, setFullname] = useState("");
   const [username, setUsername] = useState("");
   const [image, setImage] = useState("");
   const [newImageFile, setNewImageFile] = useState<File | null>(null);
   const [editField, setEditField] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  if (!currentUser) return <p>Please log in to see your account.</p>;
 
 
   // Kullanıcı verilerini yükle
@@ -189,6 +190,7 @@ const UserAccount = () => {
       setFullname(currentUser.fullname);
       setUsername(currentUser.username);
       setImage(currentUser.image);
+      setLoading(false)
     }
   }, [currentUser]);
 
@@ -251,6 +253,7 @@ const UserAccount = () => {
     if(currentUser) setError(null)
   },[])
 
+  if (!currentUser) return <p>Please log in to see your account.</p>;
   if (loading) return <p>Loading...</p>;
   if (error) return <p>{error}</p>;
 

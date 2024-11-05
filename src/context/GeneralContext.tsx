@@ -2,7 +2,7 @@
 
 "use client";
 import { getLocalStorage } from '@/utils/helpers';
-import { UsersDataTypes } from '@/utils/types';
+import { FavoritesDataTypes, UsersDataTypes } from '@/utils/types';
 import React, { createContext, useState, useContext, ReactNode, useEffect } from 'react';
 
 type GeneralContextType = {
@@ -18,6 +18,8 @@ type GeneralContextType = {
   setCurrentUser: React.Dispatch<React.SetStateAction<UsersDataTypes | null>>;
   updateCommentId: string | null; 
   setUpdateCommentId: React.Dispatch<React.SetStateAction<string | null>>; 
+  favorites: FavoritesDataTypes[] | null;
+  setfavorites: React.Dispatch<React.SetStateAction<FavoritesDataTypes[] | null>>
 };
 
 const GeneralContext = createContext<GeneralContextType | undefined>(undefined);
@@ -29,6 +31,8 @@ export const GeneralProvider = ({ children }: { children: ReactNode }) => {
   const [currentUser, setCurrentUser] = useState<UsersDataTypes | null>(null); 
   const [isSigninModalOpen, setIsSigninModalOpen] = useState(false);
   const [isSignupModalOpen, setIsSignupModalOpen] = useState(false);
+  const [favorites, setfavorites] = useState<FavoritesDataTypes[] | null>([]) // Burasi profile/favorite sayfasina gidiyor
+
   
   useEffect(() => {
     if(getLocalStorage("userRedditClone")){
@@ -51,7 +55,9 @@ export const GeneralProvider = ({ children }: { children: ReactNode }) => {
         setIsSigninModalOpen, 
         isSigninModalOpen, 
         isSignupModalOpen, 
-        setIsSignupModalOpen
+        setIsSignupModalOpen,
+        favorites, 
+        setfavorites
       }}
     >
       {children}

@@ -10,12 +10,12 @@ import supabase from '@/lib/supabaseClient';
 import { PostWithAuthorAndSubtopicDataTypes } from '@/utils/types';
 
 const UserFavorites = () => {
-  const { setLoading, loading } = useFetchContext();
+  // const { setLoading, loading } = useFetchContext();
   const { currentUser } = useGeneralContext();
   const [favoriteList, setFavoriteList] = useState<PostWithAuthorAndSubtopicDataTypes[]>([]);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  if (!currentUser) return <p>Please log in to see your favorites.</p>;
 
 
   const getFavoritePosts = async () => {
@@ -75,9 +75,11 @@ const UserFavorites = () => {
   useEffect(() => {
     if (currentUser) {
       getFavoritePosts();
+      setLoading(false)
     }
   }, [currentUser]);
 
+  if (!currentUser) return <p>Please log in to see your favorites.</p>;
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error: {error}</p>;
   if (favoriteList.length === 0) return <p className='text-orange-300 text-center'>You haven't favorited any posts yet.</p>;

@@ -80,8 +80,6 @@ export type FetchContextType = {
     setSinglePost: React.Dispatch<React.SetStateAction<PostWithAuthorDataTypes | null>>;
     postParamsSlug: string | null;
     setPostParamsSlug: React.Dispatch<React.SetStateAction<string | null>>;
-    // comments: CommentsDataTypes[] | null; 
-    // setComments: React.Dispatch<React.SetStateAction<CommentsDataTypes[] | null>>; 
     comments: CommentWithAuthorDataTypes[] | null;
   setComments: React.Dispatch<React.SetStateAction<CommentWithAuthorDataTypes[] | null>>;
     favorites: FavoritesDataTypes[] | null;
@@ -98,8 +96,6 @@ export type FetchContextType = {
     setLoading: React.Dispatch<React.SetStateAction<boolean>>; 
     error: string | null;
     setError: React.Dispatch<React.SetStateAction<string | null>>; 
-    // filteredPosts: PostDataTypes[] | null; 
-    // setFilteredPosts: React.Dispatch<React.SetStateAction<PostDataTypes[] | null>>;
     filteredPosts: PostWithAuthorAndSubtopicDataTypes[] | null; 
     setFilteredPosts: React.Dispatch<React.SetStateAction<PostWithAuthorAndSubtopicDataTypes[] | null>>;
     getPosts: () => Promise<void>

@@ -9,12 +9,14 @@ import { PostWithAuthorAndSubtopicDataTypes } from '@/utils/types'; // Gerekli t
 import supabase from '@/lib/supabaseClient';
 
 const UserPosts = () => {
-  const { loading, setLoading } = useFetchContext(); 
   const { currentUser } = useGeneralContext(); 
   const [userPosts, setUserPosts] = useState<PostWithAuthorAndSubtopicDataTypes[] | null>(null); 
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    if (!currentUser) return; // currentUser mevcut değilse fonksiyonu çalıştırma
+
     setLoading(true);
     const getUserPosts = async () => {
       try {

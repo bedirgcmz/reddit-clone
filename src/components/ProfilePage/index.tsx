@@ -8,11 +8,13 @@ import supabase from '@/lib/supabaseClient';
 import Link from 'next/link';
 
 const ProfilePage = () => {
-  const { currentUser } = useGeneralContext();
-  const { posts, comments, setError, setLoading } = useFetchContext();
-  const [favorites, setfavorites] = useState<FavoritesDataTypes[] | null>([])
+  const { currentUser, favorites, setfavorites } = useGeneralContext();
+  // const { setError, setLoading } = useFetchContext();
+  // const [favorites, setfavorites] = useState<FavoritesDataTypes[] | null>([])
   const [commentsCount, setCommentsCount] = useState<number | null>(0)
   const [postsCount, setPostsCount] = useState<number | null>(0)
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   const getFavorites = async () => {
     try {
@@ -47,9 +49,7 @@ const ProfilePage = () => {
   //   getFavorites()
   // }, [currentUser]);
 
-  if (!currentUser) {
-    return <div className='text-orange text-xl'>Please log in to view this page.</div>;
-  }
+ 
 
  // Fetch comments count
  const fetchCommentsCount = async () => {
@@ -84,12 +84,23 @@ useEffect(() => {
       fetchCommentsCount();
       fetchPostsCount();
       getFavorites()
+      setLoading(false)
     }
   
 }, [currentUser]);
 
-  const favoriteCount = favorites?.filter(fav => fav.user_id === currentUser.id).length || 0;
+  // const favoriteCount = currentUser && favorites?.filter(fav => fav.user_id === currentUser.id).length || 0;
+  if (!currentUser) {
+    return <div className='text-orange text-xl'>Please log in to view this page.</div>;
+  } 
   
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div className='text-red text-xl'>{error}</div>;
+  }
 
   const renderProfileImage = () => {
     if (currentUser.image) {
@@ -126,7 +137,7 @@ useEffect(() => {
             <p>Comments</p>
           </div>
           <div>
-            <h3 className="text-xl font-bold">{favoriteCount}</h3>
+            <h3 className="text-xl font-bold">{favorites?.filter(fav => fav.user_id === currentUser.id).length || 0}</h3>
             <p>Favorites</p>
           </div>
         </div>

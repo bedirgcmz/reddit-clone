@@ -14,12 +14,12 @@ import supabase from '@/lib/supabaseClient';
 import { CommentWithAuthorDataTypes } from '@/utils/types'; // Adjusted import
 
 const UserComments: React.FC = () => {
-  const [error, setError] = useState<string | null>(null);
-  const { comments, posts, users, getComments, setLoading, loading } = useFetchContext();
+  const { comments, getComments,  } = useFetchContext();
   const { currentUser, isUpdateCommentModalOpen, setUpdateCommentModalOpen, updateCommentId, setUpdateCommentId } = useGeneralContext(); 
   const [userComments, setUserComments] = useState<CommentWithAuthorDataTypes[]>([]); // Updated type
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  if (!currentUser) return <p>Please log in to see your comments.</p>; 
 
   const handleEditClick = (commentId: string) => {
     setUpdateCommentId(commentId); 
@@ -61,6 +61,7 @@ const UserComments: React.FC = () => {
   };
 
   useEffect(() => {
+    if (!currentUser) return; // currentUser mevcut değilse fonksiyonu çalıştırma
     setLoading(true);
     const getUserComments = async () => {
       try {
@@ -92,7 +93,7 @@ const UserComments: React.FC = () => {
     getUserComments();
   }, [currentUser, comments]);
 
-
+  if (!currentUser) return <p>Please log in to see your comments.</p>; 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>{error}</p>;
   if (!userComments || userComments.length === 0) return <p className='text-orange-300'>You haven't commented yet</p>; 
