@@ -43,7 +43,9 @@ const PostPage = ({ params }: { params: { slug: string } }) => {
           )
         `)
         .eq('slug', slug)
-        .maybeSingle();
+        .order('created_at', {ascending: false})
+        .maybeSingle()
+
 
       if (postError) throw postError;
       if (!postData) throw new Error(`No post found for the provided slug: ${slug}`);

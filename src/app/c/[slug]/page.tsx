@@ -89,7 +89,8 @@ const SubtopicPage = ({ params }: { params: { slug: string } }) => {
                             )
                         )
                     `)
-                    .in('id', postIds);
+                    .in('id', postIds)
+                    .order('created_at', {ascending: false});
 
 
                 if (filteredPostsError) throw filteredPostsError;
