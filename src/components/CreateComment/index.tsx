@@ -18,7 +18,10 @@ const CreateCommentInput: React.FC<InteractionBoxProps> = ({ singlePost }) => {
   const [isFocused, setIsFocused] = useState(false);
 
   const handleCommit = async () => {
-    if (!comment.trim()) return;
+    if (!comment.trim()) {
+      setIsFocused(false)
+      return
+    };
 
     // Insert the comment into the 'comments' table
     const { error } = await supabase.from('comments').insert([

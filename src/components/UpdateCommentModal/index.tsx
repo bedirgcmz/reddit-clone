@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, FormEvent } from 'react';
 import { useFetchContext } from '@/context/FetchContext';
 import { useGeneralContext } from '@/context/GeneralContext';
 import { AiFillCloseCircle } from 'react-icons/ai';
@@ -23,7 +23,8 @@ const UpdateCommentModal: React.FC<UpdateCommentModalProps> = ({ commentId }) =>
     }
   }, [commentId, comments]);
 
-  const handleUpdateComment = async () => {
+  const handleUpdateComment = async (e: FormEvent) => {
+    e.preventDefault()
     setLoading(true);
     try {
       const { error } = await supabase
@@ -57,21 +58,24 @@ const UpdateCommentModal: React.FC<UpdateCommentModalProps> = ({ commentId }) =>
               onClick={() => setUpdateCommentModalOpen(false)}
             />
           </div>
+          <form onSubmit={handleUpdateComment}>
           <textarea
             className="w-full p-2 mt-4 border rounded"
             value={commentContent}
             onChange={(e) => setCommentContent(e.target.value)}
             rows={4}
+            required
           />
           <div className="flex justify-end mt-4">
             <button
               className="bg-blue-500 text-white px-4 py-2 rounded"
-              onClick={handleUpdateComment}
+              type='submit'
               disabled={loading}
             >
               {loading ? 'Updating...' : 'Update'}
             </button>
           </div>
+          </form>
         </div>
       </div>
     )

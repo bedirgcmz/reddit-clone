@@ -19,8 +19,6 @@ type PostCardProps = {
 
 const PostCard: React.FC<PostCardProps> = ({ post }) => {
     const {
-        users,
-        posts,
         getPosts
     } = useFetchContext();
     const { currentUser } = useGeneralContext();
@@ -39,15 +37,16 @@ const PostCard: React.FC<PostCardProps> = ({ post }) => {
         const { data, error: uploadError } = await supabase.storage
           .from("post-images")
           .upload(fileName, updatedData.image);
-
+        console.log("calisti 1");
+        
         if (uploadError) throw uploadError;
 
         // Public URL'yi al
         imageUrl = supabase.storage.from("post-images").getPublicUrl(fileName).data.publicUrl;
       } else {
-        imageUrl = posts?.find((pt) => pt.id == postId)?.image
+        imageUrl = null
       }
-
+      
       const { data: postData, error: postError } = await supabase
         .from("posts")
         .update({
@@ -56,10 +55,16 @@ const PostCard: React.FC<PostCardProps> = ({ post }) => {
           image: imageUrl,
           updated_at: new Date(), 
         })
-        .eq('id', postId); 
+        .eq('id', postId)
+        .select("*");
 
-      if (postError) throw postError;
-
+        if (postError) {
+          console.error("Post update error:", postError);
+          throw postError;
+        } else {
+          console.log("Post updated successfully:", postData);
+        }
+        
       toast.success('Post has been updated')
       getPosts();
     } catch (error) {

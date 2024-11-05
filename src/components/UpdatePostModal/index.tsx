@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { FormEvent, useState } from 'react';
 import { PostDataTypes } from '@/utils/types'; 
+import { useFetchContext } from '@/context/FetchContext';
 
 type UpdatePostModalProps = {
   isOpen: boolean;
@@ -13,8 +14,9 @@ const UpdatePostModal: React.FC<UpdatePostModalProps> = ({ isOpen, onClose, post
   const [content, setContent] = useState(post.content);
   const [image, setImage] = useState<File | null>(null); 
 
-  const handleUpdate = () => {
+  const handleUpdate = (e: FormEvent) => {
     // Post Card componentinden geliyor
+    e.preventDefault();
     onUpdate(post.id, { title, content, image });
     onClose(); 
   };
@@ -23,9 +25,10 @@ const UpdatePostModal: React.FC<UpdatePostModalProps> = ({ isOpen, onClose, post
 
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-      <div className="bg-white p-4 rounded-lg">
+      <form onSubmit={handleUpdate} className="bg-white p-4 rounded-lg">
         <h2 className="text-lg font-semibold">Update Post</h2>
         <input
+          required
           type="text"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
@@ -43,13 +46,13 @@ const UpdatePostModal: React.FC<UpdatePostModalProps> = ({ isOpen, onClose, post
           onChange={(e) => setImage(e.target.files?.[0] || null)} 
           className="mt-2"
         />
-        <button onClick={handleUpdate} className="mt-4 bg-blue-500 text-white p-2 rounded mr-2">
+        <button type="submit" className="mt-4 bg-blue-500 text-white p-2 rounded mr-2">
           Update
         </button>
         <button onClick={onClose} className="mt-2 bg-gray-500 text-white p-2 rounded">
           Cancel
         </button>
-      </div>
+      </form>
     </div>
   );
 };
