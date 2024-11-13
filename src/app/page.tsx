@@ -7,9 +7,9 @@ import supabase from '@/lib/supabaseClient';
 import { PostWithAuthorDataTypes } from '@/utils/types';
 
 export default function Home() {
-  const {loading} = useFetchContext();
+  const {loading, postsWithAuthors, setPostsWithAuthors} = useFetchContext();
 
-  const [postsWithAuthors, setPostsWithAuthors] = useState<PostWithAuthorDataTypes[] | null>([]);
+  // const [postsWithAuthors, setPostsWithAuthors] = useState<PostWithAuthorDataTypes[] | null>([]);
 
   const getPostsWithAuthors = async () => {
     const { data, error } = await supabase
@@ -33,7 +33,6 @@ export default function Home() {
   useEffect(() => {
     getPostsWithAuthors();
   }, []);
-
 
   if (loading) return <p>Loading...</p>;
   if (postsWithAuthors?.length == 0 ) return <p className='text-orange-300'>We couldn't find any posts for this search. Try a new search.</p>;

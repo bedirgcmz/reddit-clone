@@ -20,6 +20,8 @@ export const FetchProvider = ({ children }: { children: ReactNode }) => {
   const [error, setError] = useState<string | null>(null);
   const [postParamsSlug, setPostParamsSlug] = useState<string | null>(null);
   const [filteredPosts, setFilteredPosts] = useState<PostWithAuthorAndSubtopicDataTypes[] | null>([]);
+  const [postsWithAuthors, setPostsWithAuthors] = useState<PostWithAuthorDataTypes[] | null>([]);
+
 
   const getComments = async () => {
     try {
@@ -130,6 +132,8 @@ export const FetchProvider = ({ children }: { children: ReactNode }) => {
       setFilteredPosts,
       getPosts,
       getComments,
+      postsWithAuthors, 
+      setPostsWithAuthors
     }}>
       {children}
     </FetchContext.Provider>

@@ -100,6 +100,8 @@ export type FetchContextType = {
     setFilteredPosts: React.Dispatch<React.SetStateAction<PostWithAuthorAndSubtopicDataTypes[] | null>>;
     getPosts: () => Promise<void>
     getComments: () => Promise<void>
+    postsWithAuthors: PostWithAuthorDataTypes[] | null; 
+    setPostsWithAuthors: React.Dispatch<React.SetStateAction<PostWithAuthorDataTypes[] | null>>; 
 
     
   };

@@ -14,6 +14,7 @@ import CreatePostModalButton from '../CreatePostModalButton';
 import supabase from '@/lib/supabaseClient';
 import { useFetchContext } from '@/context/FetchContext';
 import { useRouter } from "next/navigation";
+import { PostWithAuthorDataTypes } from '@/utils/types';
 
 
 const Navbar = () => {
@@ -21,7 +22,7 @@ const Navbar = () => {
   // const [isSignupModalOpen, setIsSignupModalOpen] = useState(false);
   const [isMoreMenuOpen, setIsMoreMenuOpen] = useState(false);
   const [searchText, setSearchText] = useState("");
-  const {setPosts} = useFetchContext();
+  const {setPosts, setPostsWithAuthors} = useFetchContext();
   const { isSidebarOpen, setIsSidebarOpen, currentUser, isSigninModalOpen, setIsSigninModalOpen, isSignupModalOpen, setIsSignupModalOpen } = useGeneralContext();
   const router = useRouter();
   
@@ -47,7 +48,7 @@ const Navbar = () => {
     try {
       const { data: posts, error } = await supabase
         .from("posts")
-        .select("*")
+        .select("*, users (username, image)")
         .or(`title.ilike.%${searchText}%,content.ilike.%${searchText}%`);
   
       if (error) {
@@ -55,9 +56,13 @@ const Navbar = () => {
         return [];
       }
       router.push('/');
-      console.log("route olmadi");
-      
-      setPosts(posts)
+      // postsWithAuthors state'ini güncellemek için veri tipini uygun hale getiriyoruz
+      const formattedData = posts.map((post) => ({
+        ...post,
+        author: post.users,
+      })) as PostWithAuthorDataTypes[];
+  
+    setPostsWithAuthors(formattedData);
     } catch (err) {
       console.error("Unexpected error:", err);
       return [];
