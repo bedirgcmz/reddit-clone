@@ -40,13 +40,13 @@ const deletePost = async ({ pPostId }: DeleteFuncProps) => {
       mySwalAlert({
         icon: "success",
         title: "successful!",
-        text: "This comment was deleted.",
+        text: "This post was deleted.",
       });
     if (deleteError) {
       mySwalAlert({
         icon: "error",
         title: "Sorry!",
-        text: "This comment was not deleted.",
+        text: "This post was not deleted.",
       });
       console.error("Error deleting post:", deleteError.message);
       return;

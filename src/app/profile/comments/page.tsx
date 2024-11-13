@@ -95,7 +95,7 @@ const UserComments: React.FC = () => {
   if (!currentUser) return <p>Please log in to see your comments.</p>; 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>{error}</p>;
-  if (!userComments || userComments.length === 0) return <p className='text-orange-300'>You haven't commented yet</p>; 
+  if (!userComments || userComments.length === 0) return <p className='text-orange-300 text-center'>You haven't commented yet</p>; 
 
   return (
     <div className='overflow-x-scroll px-2 mb-4'>
